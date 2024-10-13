@@ -1,0 +1,8 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import "./utils/mixin";
+@import "./utils/variable";
+
+@import "./base/reset";
