@@ -24,16 +24,16 @@ root.render(
     <Suspense fallback={<Loading />}>
       <HistoryRouter history={routeLink}>
         <Routes>
-          {/* Đặt PrivateRoute để bảo vệ các trang admin */}
-          <Route path="" element={<ProtectedRoute requiredRole={"ROLE_ADMIN"} />}>
+          {/* Admin routes with protected access */}
+          <Route element={<ProtectedRoute requiredRole={"ROLE_ADMIN"} />}>
             <Route path="" element={<AdminTemplate />} />
-            <Route path="/excel" element={<ExcelTemplate />} />
+            <Route path="excel" element={<ExcelTemplate />} />
           </Route>
 
-          {/* Trang login không cần bảo vệ */}
+          {/* Public login route */}
           <Route path="/login" element={<Login />} />
 
-          {/* Trang 404 */}
+          {/* 404 Not Found */}
           <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </HistoryRouter>
