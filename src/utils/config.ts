@@ -94,10 +94,10 @@ httpClient.interceptors.response.use(
 /* statusCode thông dụng : 
     200: Dữ liệu gửi đi và nhận về kết quả thành công (OK)
     201: Dữ liệu khởi tạo thành công (Created)
-    400: Bad request (lỗi không tìm thấy item trên backend)
-    404: Not found (không tìm thấy link backend)
-    500: Error in server (Lỗi xảy ra tại server - có thể do dữ liệu frontend gửi lên xử lý bị lỗi backend không catch trường hợp này thì ra 500 hoặc là backend code bị lỗi) => Xác định lỗi => mở post man request thử với data đúng thì có được hay không nếu vẫn lỗi thì báo backend fix
+    400: Bad request (lỗi không tìm thấy item trên backend) => FE sai hoặc BE sai
     401: UnAuthorize (Lỗi khi không có quyền truy cập vào api này (phải token hợp lệ ...))
     403: Forbiden ( Lỗi chưa đủ quyền truy cập vào api )
+    404: Not found (không tìm thấy link backend)
+    500: Error in server (Lỗi xảy ra tại server - có thể do dữ liệu frontend gửi lên xử lý bị lỗi backend không catch trường hợp này thì ra 500 hoặc là backend code bị lỗi) => Xác định lỗi => mở post man request thử với data đúng thì có được hay không nếu vẫn lỗi thì báo backend fix
 
 */

@@ -2,17 +2,23 @@ import React, { useState } from 'react';
 import type { TableProps } from 'antd';
 import { Form, Input, InputNumber, Popconfirm, Table, Typography } from 'antd';
 
-interface DataType {
+
+ // Kiểu dữ liệu cho bảng
+ interface DataType {
   key: string;
   name: string;
   age: number;
+  tel: string;
+  phone: number;
   address: string;
 }
 
-const originData = Array.from({ length: 100 }).map<DataType>((_, i) => ({
+export const originData = Array.from({ length: 100 }).map<DataType>((_, i) => ({
   key: i.toString(),
   name: `Edward ${i}`,
   age: 32,
+  tel: "0123456789",
+  phone: 1234567899,
   address: `London Park no. ${i}`,
 }));
 
@@ -114,19 +120,31 @@ function TableData({}: Props) {
       {
         title: 'name',
         dataIndex: 'name',
-        width: '25%',
+        width: '10%',
         editable: true,
       },
       {
         title: 'age',
         dataIndex: 'age',
-        width: '15%',
+        width: '5%',
         editable: true,
       },
       {
         title: 'address',
         dataIndex: 'address',
-        width: '40%',
+        width: '15%',
+        editable: true,
+      },
+      {
+        title: 'tel',
+        dataIndex: 'tel',
+        width: '10%',
+        editable: true,
+      },
+      {
+        title: 'phone',
+        dataIndex: 'phone',
+        width: '15%',
         editable: true,
       },
       {
