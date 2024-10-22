@@ -1,14 +1,17 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { FaArrowRight, FaArrowLeft } from "react-icons/fa";
 import logo from "../../assets/images/logo-company.png";
 
 import { useFormik } from "formik";
 import * as yup from "yup";
 
-import { useDispatch } from "react-redux";
-import { DispatchType } from "../../redux/configStore";
-import { loginAsyncAction } from "../../redux/reducers/authReducer";
+import { useDispatch, useSelector } from "react-redux";
+import { DispatchType, RootState } from "../../redux/configStore";
+import { useNavigate } from "react-router-dom";
 
+import { loginAsyncAction } from "../../redux/reducers/authReducer";
+import { toast } from "react-toastify";
+import { toastOptions } from "../../utils/toastOptions";
 
 
 export interface UserLoginFrm {
@@ -17,6 +20,8 @@ export interface UserLoginFrm {
 }
 
 const LoginPage: React.FC = () => {
+  const { token } = useSelector((state: RootState) => state.authReducer);
+
   const [active, setActive] = useState<boolean>(false);
 
   const toggleActive = () => {
@@ -24,6 +29,13 @@ const LoginPage: React.FC = () => {
   };
 
   const dispatch: DispatchType = useDispatch();
+  const navigate = useNavigate();
+
+  useEffect(()=>{
+    if(token){
+      navigate('/');
+    }
+  },[token])
 
 
   const loginFrm = useFormik<UserLoginFrm>({
@@ -48,12 +60,9 @@ const LoginPage: React.FC = () => {
     }),
     onSubmit: (values: UserLoginFrm) => {
       const actionApi = loginAsyncAction(values);
-      console.log(values);
       dispatch(actionApi);
     },
   });
-  
-
 
 
   return (
@@ -110,7 +119,7 @@ const LoginPage: React.FC = () => {
               </div>
               <button
                 type="submit"
-                className="inline-block bg-[#3e8fff] outline-none text-white uppercase text-[15px] font-extrabold py-[12px] px-[45px] rounded-[22px] border border-white cursor-pointer"
+                className="hover:text-black hover:drop-shadow-2xl inline-block bg-[#3e8fff] outline-none text-white uppercase text-[15px] font-extrabold py-[12px] px-[45px] rounded-[22px] border border-white cursor-pointer"
               >
                 Sign In
               </button>
@@ -159,8 +168,9 @@ const LoginPage: React.FC = () => {
               </div>
 
               <button
-                type="submit"
-                className="inline-block outline-none bg-[#3e8fff] text-white uppercase text-[15px] font-extrabold py-[12px] px-[45px] rounded-[22px] border border-white cursor-pointer"
+                type="button"
+                className="hover:text-black hover:drop-shadow-2xl inline-block outline-none bg-[#3e8fff] text-white uppercase text-[15px] font-extrabold py-[12px] px-[45px] rounded-[22px] border border-white cursor-pointer"
+                onClick={()=> { toast.error('Đăng ký thất bại!', toastOptions);}}
               >
                 Sign Up
               </button>

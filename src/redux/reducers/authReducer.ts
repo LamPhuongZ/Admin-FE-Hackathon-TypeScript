@@ -2,22 +2,20 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import { ACCESS_TOKEN, httpClient } from '../../utils/config';
 import { UserLoginFrm } from '../../pages/Login';
 
-import { ToastOptions, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { getDataTextStorage, setDataTextStorage } from '../../utils/utilMethod';
 
+import { toast } from 'react-toastify';
+import { toastOptions } from '../../utils/toastOptions';
+import { jwtDecode } from 'jwt-decode';
 
-const toastOptions: ToastOptions<{}> = {
-  position: "top-center",
-  autoClose: 400,
-  hideProgressBar: false,
-  closeOnClick: true,
-  pauseOnHover: true,
-  draggable: true,
-  progress: undefined,
-  theme: "light",
-};
 
+interface UserLogin {
+  role: string;
+  sub: string;
+  iat: number;
+  exp: number;
+}
 
 export interface UserLoginApi {
   "access-token": string;
@@ -29,7 +27,7 @@ export interface UserState {
 }
 
 const initialState: UserState = {
-  token: getDataTextStorage(ACCESS_TOKEN) 
+  token: getDataTextStorage(ACCESS_TOKEN)
     ? { "access-token": getDataTextStorage(ACCESS_TOKEN)! } // Kiểm tra nếu có token trong localStorage
     : undefined,
   isLoadingAuth: false,
@@ -72,8 +70,13 @@ export default authReducer.reducer
 export const loginAsyncAction = createAsyncThunk("loginAsyncAction", async (userLoginForm: UserLoginFrm) => {
   try {
     const res = await httpClient.post("/api/v1/auth/sign-in", userLoginForm);
+    const token: UserLogin = jwtDecode(res.data.data['access-token']);
+    
+    if(token.role !== "ROLE_ADMIN"){
+      toast.error('Đăng nhập thất bại!', toastOptions);
+      return 
+    }
 
-    // Lưu vào localStorage
     setDataTextStorage(ACCESS_TOKEN, res.data.data['access-token']);
     toast.success('Đăng nhập thành công!', toastOptions);
 
@@ -82,7 +85,7 @@ export const loginAsyncAction = createAsyncThunk("loginAsyncAction", async (user
 
   } catch (err) {
     toast.error('Đăng nhập thất bại!', toastOptions);
-    console.log("🚀 ~ file: authReducer.ts:112 ~ loginAsyncAction ~ err:", err)
+    console.log("🚀 ~ file: authReducer.ts:86 ~ loginAsyncAction ~ err:", err)
     // Đảm bảo lỗi được truyền đi
     throw err;
   }

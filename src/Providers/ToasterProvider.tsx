@@ -1,13 +1,13 @@
-'use client'
-
-// import {Toaster} from 'react-hot-toast'
-import { ToastContainer, toast } from 'react-toastify';
+import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-const ToasterProvider= () => {
+function ToasterProvider() {
   return (
-    <ToastContainer />
-  )
+    <>
+      {/* Các thành phần khác */}
+      <ToastContainer /> {/* Thêm ToastContainer để thông báo hiện lên */}
+    </>
+  );
 }
 
 export default ToasterProvider;
