@@ -1,12 +1,15 @@
 import "./styles/_all.scss";
 import { lazy, Suspense } from "react";
-import { Provider } from "react-redux";
 import { FloatButton } from "antd";
 import { unstable_HistoryRouter as HistoryRouter, Route, Routes } from 'react-router-dom';
 import { createBrowserHistory } from "history";
 import ReactDOM from "react-dom/client";
 import Loading from "./components/loading";
-import store from "./redux/store";
+
+// Setup redux
+import { Provider } from "react-redux";
+import { store } from "./redux/configStore.ts";
+
 import ProtectedRoute from "./components/ProtectedRoute/ProtectedRoute.tsx";
 
 const AdminTemplate = lazy(() => import("./templates/AdminTemplate"));

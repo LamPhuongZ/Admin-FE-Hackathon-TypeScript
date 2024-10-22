@@ -1,6 +1,6 @@
 import axios, { AxiosError, AxiosInstance, AxiosResponse, InternalAxiosRequestConfig } from "axios";
 import { routeLink } from "../main";
-import { getDataJsonStorage } from "./utilMethod";
+import { getDataTextStorage } from "./utilMethod";
 import { jwtDecode } from "jwt-decode"
 
 //setup hằng số
@@ -27,68 +27,71 @@ httpClient.interceptors.request.use((req: InternalAxiosRequestConfig<any>) => {
 
 //Cấu hình cho response (kết quả trả về từ api)
 httpClient.interceptors.response.use(
-  (response: AxiosResponse<any>) => {
-      // Xử lý response thành công
-      return response;
-  },
-  (error: AxiosError) => {
-      // Xử lý lỗi response
-      if (error.response) {
-          // Server đã trả về một response nhưng với mã trạng thái lỗi
-          switch (error.response.status) {
-              case 401:
-
-                  //Đã đăng nhập nhưng hết hạn (gọi api refresh token)
-                  let decodedToken:any = jwtDecode(getDataJsonStorage(USER_LOGIN).accessToken);
-                  console.log("Decoded Token", decodedToken);
-                  let currentDate = new Date();
-
-                  // JWT exp is in seconds
-                  if (decodedToken.exp * 1000 < currentDate.getTime()) {
-                      console.log("Token expired.");
-                      //Remove userlogin trong localstorage
-                      localStorage.removeItem(USER_LOGIN);
-                      //Chuyển hướng về đăng nhập
-                      routeLink.push('/login');
-                  }
-                  
-
-                  // Xử lý lỗi 401 Unauthorized, ví dụ: chuyển hướng đến trang đăng nhập
-                  alert("Unauthorized access - perhaps the user is not logged in or token expired.");
-                  
-                  routeLink.push('/login');
-
-                  break;
-              case 403:
-                  // Xử lý lỗi 403 Forbidden
-                  alert("Forbidden - you don't have permission to access this resource.");
-                  
-                  routeLink.push('/login');
-
-                  break;
-              case 404:
-                  // Xử lý lỗi 404 Not Found
-                  alert("Resource not found.");
-                  break;
-              case 500:
-                  // Xử lý lỗi 500 Internal Server Error
-                  alert("Internal server error.");
-                  break;
-              default:
-                  // Xử lý các mã lỗi khác
-                  console.error(`Error ${error.response.status}: ${error.response.statusText}`);
-          }
-      } else if (error.request) {
-          // Request đã được gửi nhưng không nhận được phản hồi từ server
-          console.error("No response received from server.");
-      } else {
-          // Một số lỗi khác xảy ra trong quá trình thiết lập request
-          console.error("Error setting up request: ", error.message);
-      }
-
-      return Promise.reject(error);
-  }
-);
+    (response: AxiosResponse<any>) => {
+        // Xử lý response thành công
+        return response;
+    },
+    (error: AxiosError) => {
+        // Xử lý lỗi response
+        if (error.response) {
+            // Server đã trả về một response nhưng với mã trạng thái lỗi
+            switch (error.response.status) {
+                case 401:
+                    const token = getDataTextStorage(ACCESS_TOKEN);
+                    if (token) {
+                        let decodedToken: any = jwtDecode(token);
+                        console.log("Decoded Token", decodedToken);
+                        let currentDate = new Date();
+  
+                        // JWT exp is in seconds
+                        if (decodedToken.exp * 1000 < currentDate.getTime()) {
+                            console.log("Token expired.");
+                            //Remove userlogin trong localstorage
+                            localStorage.removeItem(USER_LOGIN);
+                            //Chuyển hướng về đăng nhập
+                            routeLink.push('/login');
+                        }
+                    } else {
+                        console.log("No token found");
+                    }
+  
+                    // Xử lý lỗi 401 Unauthorized
+                    alert("Unauthorized access - perhaps the user is not logged in or token expired.");
+                    routeLink.push('/login');
+                    break;
+  
+                case 403:
+                    // Xử lý lỗi 403 Forbidden
+                    alert("Forbidden - you don't have permission to access this resource.");
+                    routeLink.push('/login');
+                    break;
+  
+                case 404:
+                    // Xử lý lỗi 404 Not Found
+                    alert("Resource not found.");
+                    break;
+  
+                case 500:
+                    // Xử lý lỗi 500 Internal Server Error
+                    alert("Internal server error.");
+                    break;
+  
+                default:
+                    // Xử lý các mã lỗi khác
+                    console.error(`Error ${error.response.status}: ${error.response.statusText}`);
+            }
+        } else if (error.request) {
+            // Request đã được gửi nhưng không nhận được phản hồi từ server
+            console.error("No response received from server.");
+        } else {
+            // Một số lỗi khác xảy ra trong quá trình thiết lập request
+            console.error("Error setting up request: ", error.message);
+        }
+  
+        return Promise.reject(error);
+    }
+  );
+  
 
 
 /* statusCode thông dụng : 
