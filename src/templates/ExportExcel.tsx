@@ -20,7 +20,7 @@ interface DataType {
   address: string;
 }
 
-const renderContent = (value: any, row: DataType, index: number) => {
+const renderContent = (value: any, _row: DataType, index: number) => {
   const obj = {
     children: value,
     props: {} as { colSpan?: number; rowSpan?: number; style?: React.CSSProperties },
@@ -35,7 +35,7 @@ const columns: ColumnsType<DataType> = [
   {
     title: "Name",
     dataIndex: "name",
-    render: (text: string, row: DataType, index: number) => {
+    render: (text: string, _row: DataType, index: number) => {
       if (index < 4) {
         return <a>{text}</a>;
       }
@@ -56,7 +56,7 @@ const columns: ColumnsType<DataType> = [
     title: "Home phone",
     colSpan: 2,
     dataIndex: "tel",
-    render: (value: string, row: DataType, index: number) => {
+    render: (value: string, _row: DataType, index: number) => {
       const obj = {
         children: value,
         props: {} as { rowSpan?: number; colSpan?: number; style?: React.CSSProperties },
@@ -150,7 +150,7 @@ const excelColumns: IExcelColumn[] = columns
 
 type Props = {};
 
-const ExportExcel: React.FC<Props> = (props: Props) => {
+const ExportExcel: React.FC<Props> = () => {
   return (
     <div>
       <Button

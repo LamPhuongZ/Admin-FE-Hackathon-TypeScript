@@ -16,7 +16,6 @@ const InputForm: React.FC<InputProps> = ({
   label,
   type = "text",
   disabled,
-  required,
   onInput,
 }) => {
 
