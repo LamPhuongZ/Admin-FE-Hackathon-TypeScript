@@ -35,7 +35,7 @@ const LoginPage: React.FC = () => {
     if(token){
       navigate('/');
     }
-  },[token])
+  },[token, navigate])
 
 
   const loginFrm = useFormik<UserLoginFrm>({

@@ -14,6 +14,7 @@ import { Provider } from "react-redux";
 import { store } from "./redux/configStore.ts";
 
 import ProtectedRoute from "./components/ProtectedRoute/ProtectedRoute.tsx";
+import RedirectIfAuthenticated from "./components/RedirectIfAuthenticated/RedirectIfAuthenticated.tsx";
 
 const AdminTemplate = lazy(() => import("./templates/AdminTemplate"));
 const ExcelTemplate = lazy(() => import("./templates/ExportExcel"));
@@ -34,7 +35,13 @@ root.render(
             <Route path="excel" element={<ExcelTemplate />} />
           </Route>
 
-          <Route path="/login" element={<Login />} />
+          {/* Sử dụng RedirectIfAuthenticated để chặn truy cập vào trang login nếu đã đăng nhập */}
+          <Route path="/login" element={
+            <RedirectIfAuthenticated>
+              <Login />
+            </RedirectIfAuthenticated>
+          } />
+          
           <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </HistoryRouter>

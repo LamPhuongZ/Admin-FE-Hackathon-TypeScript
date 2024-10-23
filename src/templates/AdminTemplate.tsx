@@ -20,6 +20,7 @@ import { MdOutlineWorkOutline } from 'react-icons/md';
 import { VscGraph, VscGroupByRefType } from 'react-icons/vsc';
 
 import TableData, { originData } from '../components/table';
+import UserMenu from '../components/Header/Navbar/UserMenu';
 
 
 
@@ -66,89 +67,89 @@ interface IExcelColumn {
    title: string;
    dataIndex: string;
    key?: string;
- }
- 
- // Kiểu dữ liệu cho bảng
- interface DataType {
+}
+
+// Kiểu dữ liệu cho bảng
+interface DataType {
    key: string;
    name: string;
    age: number;
    tel: string;
    phone: number;
    address: string;
- }
- 
- const renderContent = (value: any, row: DataType, index: number) => {
+}
+
+const renderContent = (value: any, row: DataType, index: number) => {
    const obj = {
-     children: value,
-     props: {} as { colSpan?: number; rowSpan?: number; style?: React.CSSProperties },
+      children: value,
+      props: {} as { colSpan?: number; rowSpan?: number; style?: React.CSSProperties },
    };
    if (index === 4) {
-     obj.props.colSpan = 0;
+      obj.props.colSpan = 0;
    }
    return obj;
- };
- 
- const columns: ColumnsType<DataType> = [
+};
+
+const columns: ColumnsType<DataType> = [
    {
-     title: "Name",
-     dataIndex: "name",
-     render: (text: string, row: DataType, index: number) => {
-       if (index < 4) {
-         return <a>{text}</a>;
-       }
-       return {
-         children: <a>{text}</a>,
-         props: {
-           colSpan: 5,
-         },
-       };
-     },
+      title: "Name",
+      dataIndex: "name",
+      render: (text: string, row: DataType, index: number) => {
+         if (index < 4) {
+            return <a>{text}</a>;
+         }
+         return {
+            children: <a>{text}</a>,
+            props: {
+               colSpan: 5,
+            },
+         };
+      },
    },
    {
-     title: "Age",
-     dataIndex: "age",
-     render: renderContent,
+      title: "Age",
+      dataIndex: "age",
+      render: renderContent,
    },
    {
-     title: "Home phone",
-     colSpan: 2,
-     dataIndex: "tel",
-     render: (value: string, row: DataType, index: number) => {
-       const obj = {
-         children: value,
-         props: {} as { rowSpan?: number; colSpan?: number; style?: React.CSSProperties },
-       };
-       if (index === 2) {
-         obj.props.rowSpan = 2;
-         obj.props.style = { color: "red" };
-       }
-       if (index === 3) {
-         obj.props.rowSpan = 0;
-         obj.props.style = { color: "red" };
-       }
-       if (index === 4) {
-         obj.props.colSpan = 0;
-         obj.props.style = { color: "red" };
-       }
-       return obj;
-     },
+      title: "Home phone",
+      colSpan: 2,
+      dataIndex: "tel",
+      render: (value: string, row: DataType, index: number) => {
+         const obj = {
+            children: value,
+            props: {} as { rowSpan?: number; colSpan?: number; style?: React.CSSProperties },
+         };
+         if (index === 2) {
+            obj.props.rowSpan = 2;
+            obj.props.style = { color: "red" };
+         }
+         if (index === 3) {
+            obj.props.rowSpan = 0;
+            obj.props.style = { color: "red" };
+         }
+         if (index === 4) {
+            obj.props.colSpan = 0;
+            obj.props.style = { color: "red" };
+         }
+         return obj;
+      },
    },
    {
-     title: "Phone",
-     colSpan: 0,
-     dataIndex: "phone",
-     render: renderContent,
+      title: "Phone",
+      colSpan: 0,
+      dataIndex: "phone",
+      render: renderContent,
    },
    {
-     title: "Address",
-     dataIndex: "address",
-     render: renderContent,
+      title: "Address",
+      dataIndex: "address",
+      render: renderContent,
    },
- ];
- 
- // Dữ liệu cho bảng
- const data: DataType[] =  originData;
+];
+
+// Dữ liệu cho bảng
+const data: DataType[] = originData;
 //  [
 //    {
 //      key: "1",
@@ -191,22 +192,22 @@ interface IExcelColumn {
 //      address: "Dublin No. 2 Lake Park",
 //    },
 //  ];
- 
- // Hàm kiểm tra kiểu
- const isColumnType = (
+
+// Hàm kiểm tra kiểu
+const isColumnType = (
    column: ColumnType<DataType> | any
- ): column is ColumnType<DataType> => {
+): column is ColumnType<DataType> => {
    return !!column.dataIndex;
- };
- 
- // Tạo kiểu cột cho Excel
- const excelColumns: IExcelColumn[] = columns
+};
+
+// Tạo kiểu cột cho Excel
+const excelColumns: IExcelColumn[] = columns
    .filter(isColumnType) // Lọc các cột chỉ có dataIndex
    .map((col) => ({
-     title: col.title as string,
-     dataIndex: col.dataIndex as string,
+      title: col.title as string,
+      dataIndex: col.dataIndex as string,
    }));
- 
+
 
 
 type Props = {}
@@ -220,24 +221,19 @@ const TestTemplate = (props: Props) => {
 
    return (
       <Layout>
-         <Header style={{ display: 'flex', alignItems: 'center' }}>
+         <Header style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
             <Link to="/" className="flex justify-center items-center gap-2">
                <img src={logo} alt="" className="w-10 h-10" loading="lazy" />
-               <h1 className="lg:text-[28px]
-                              md:text-[20px]
-                              w-60 h-full 
-                              text-white 
-                              font-bold"
-               >EasyJob</h1>
+               <h1 className="text-xl h-full text-white font-bold">EasyJob</h1>
             </Link>
 
-            {/* THÊM CODE TÊN ADMIN + TÊN Ở DƯỚI ĐÂY */}
-
+            {/* PROFILE */}
+            <UserMenu />
          </Header>
 
+
+
          <Layout>
-
-
             <Sider
                trigger={null}
                collapsible collapsed={collapsed}

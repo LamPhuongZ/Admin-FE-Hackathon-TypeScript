@@ -50,14 +50,7 @@ export default function Button({
       : "btn-primary";
 
   // Thêm biến để chứa các div circle
-  const circles = (
-    <>
-      <div className="circle-1 group-hover:top-1 group-hover:right-2 group-hover:scale-150"></div>
-      <div className="circle-2 group-hover:top-1 group-hover:right-2 group-hover:scale-150"></div>
-      <div className="circle-3 group-hover:top-1 group-hover:right-2 group-hover:scale-150"></div>
-      <div className="circle-4 group-hover:top-1 group-hover:right-2 group-hover:scale-150"></div>
-    </>
-  );
+
 
   return (
     <button
@@ -66,7 +59,7 @@ export default function Button({
       onClick={onClick}
       disabled={loading}
     >
-      {circle && circles} {/* Hiển thị các div circle khi circle là true */}
+      {circle } {/* Hiển thị các div circle khi circle là true */}
       <span className="relative z-20">
         {icon && iconPosition === "left" && (
           <span className="mr-2">{icon}</span>

@@ -22,6 +22,10 @@ const setDataJsonStorage = (storeName: string, data: any): void => {
     localStorage.setItem(storeName, JSON.stringify(data));
 }
 
+const clearStorage = (name: string): void => {
+    localStorage.removeItem(name);
+}
+
 // Các hàm để thao tác với cookie
 function setCookie(name: string, value: string, days: number): void {
     let expires = "";
@@ -48,4 +52,4 @@ function delCookie(name: string): void {
     document.cookie = name + '=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;';
 }
 
-export { setCookie, getCookie, delCookie, getDataTextStorage, getDataJsonStorage, setDataTextStorage, setDataJsonStorage }
+export { setCookie, getCookie, delCookie, getDataTextStorage, getDataJsonStorage, setDataTextStorage, setDataJsonStorage, clearStorage }
