@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import bgImage from "../../assets/gifs/404.gif";
-import Button from "../../components/button/Button";
+import Button from "../../components/Button/Button";
 
 export default function NotFoundPage() {
   const navigate = useNavigate();

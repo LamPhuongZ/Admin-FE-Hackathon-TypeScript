@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import { ACCESS_TOKEN, httpClient } from '../../utils/config';
-import { UserLoginFrm } from '../../pages/Login';
+import { UserLoginFrm } from '../../pages/Login/Login';
 
 import 'react-toastify/dist/ReactToastify.css';
 import { getDataTextStorage, setDataTextStorage } from '../../utils/utilMethod';
@@ -10,7 +10,7 @@ import { toastOptions } from '../../utils/toastOptions';
 import { jwtDecode } from 'jwt-decode';
 
 
-interface UserLogin {
+export interface UserLogin {
   role: string;
   sub: string;
   iat: number;

@@ -89,6 +89,13 @@ const columns: ColumnsType<DataType> = [
   },
 ];
 
+
+// ====================================================
+//                EXPORT EXCEL FILE
+// ====================================================
+// Dữ liệu cho bảng
+// const data: DataType[] = originData;
+
 // Dữ liệu cho bảng
 const data: DataType[] = [
   {

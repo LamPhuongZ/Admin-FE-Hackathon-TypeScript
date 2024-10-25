@@ -70,8 +70,6 @@ export default userReducer.reducer
 export const profileUserAsyncAction = createAsyncThunk("profileUserAsyncAction", async () => {
   try {
     const res = await httpClient.get(`/api/v1/self`);
-    console.log("🚀 ~ file: userReducer.ts:74 ~ profileUserAsyncAction ~ res:", res);
-
     
     setDataJsonStorage(USER_LOGIN, res.data.data);
     return res.data.data;

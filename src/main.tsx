@@ -4,7 +4,7 @@ import { FloatButton } from "antd";
 import { unstable_HistoryRouter as HistoryRouter, Route, Routes } from 'react-router-dom';
 import { createBrowserHistory } from "history";
 import ReactDOM from "react-dom/client";
-import Loading from "./components/loading";
+import Loading from "./components/Loading/index.tsx";
 
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -15,11 +15,12 @@ import { store } from "./redux/configStore.ts";
 
 import ProtectedRoute from "./components/ProtectedRoute/ProtectedRoute.tsx";
 import RedirectIfAuthenticated from "./components/RedirectIfAuthenticated/RedirectIfAuthenticated.tsx";
+import TestTemplate from "./templates/TestTemplate.tsx";
 
 const AdminTemplate = lazy(() => import("./templates/AdminTemplate"));
 const ExcelTemplate = lazy(() => import("./templates/ExportExcel"));
-const Login = lazy(() => import("./pages/Login/index.tsx"));
-const NotFoundPage = lazy(() => import("./pages/NotFoundPage"));
+const Login = lazy(() => import("./pages/Login/Login.tsx"));
+const NotFoundPage = lazy(() => import("./pages/NotFoundPage/NotFoundPage.tsx"));
 
 export const routeLink: any = createBrowserHistory();
 
@@ -32,6 +33,7 @@ root.render(
 
           <Route element={<ProtectedRoute requiredRole={"ROLE_ADMIN"} />}>
             <Route path="" element={<AdminTemplate />} />
+            <Route path="/test" element={<TestTemplate />} />
             <Route path="excel" element={<ExcelTemplate />} />
           </Route>
 
