@@ -1,8 +1,6 @@
-import React from 'react'
 
-type Props = {}
 
-const Skill = (props: Props) => {
+const Skill = () => {
   return (
     <div>Skill</div>
   )

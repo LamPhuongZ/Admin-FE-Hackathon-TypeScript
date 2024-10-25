@@ -33,8 +33,10 @@ root.render(
 
           <Route element={<ProtectedRoute requiredRole={"ROLE_ADMIN"} />}>
             <Route path="" element={<AdminTemplate />} />
-            <Route path="/test" element={<TestTemplate />} />
             <Route path="excel" element={<ExcelTemplate />} />
+
+
+            <Route path="/test" element={<TestTemplate />} />
           </Route>
 
           {/* Sử dụng RedirectIfAuthenticated để chặn truy cập vào trang login nếu đã đăng nhập */}

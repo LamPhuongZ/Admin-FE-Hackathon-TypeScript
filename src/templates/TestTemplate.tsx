@@ -1,108 +1,188 @@
-import React, { useState } from 'react';
-import type { MenuProps } from 'antd';
-import { Breadcrumb, Layout, Menu, Space, theme } from 'antd';
-import { Avatar, Badge } from 'antd';
-import { Link } from 'react-router-dom';
-import UserMenu from '../components/Header/Navbar/UserMenu';
+import { useState } from 'react';
+import {
+   MenuFoldOutlined,
+   MenuUnfoldOutlined,
+   UserOutlined,
+} from '@ant-design/icons';
 
-import { BellOutlined, UserOutlined } from '@ant-design/icons';
 import logo from "../assets/images/logo-company.png";
+
+import { Button, Layout, Menu, theme } from 'antd';
+import type { MenuProps } from 'antd';
+
+
+import { Link } from "react-router-dom";
+
 import { PiShareNetworkBold } from 'react-icons/pi';
 import { MdOutlineWorkOutline } from 'react-icons/md';
 import { VscGraph, VscGroupByRefType } from 'react-icons/vsc';
 
+import UserMenu from '../components/Header/Navbar/UserMenu';
+import TableData from '../components/Table/Table';
 
-const { Header, Content, Footer, Sider } = Layout;
+
+
+const { Header, Sider, Content, Footer } = Layout;
 
 type MenuItem = Required<MenuProps>['items'][number];
 
 function getItem(
-    label: React.ReactNode,
-    key: React.Key,
-    icon?: React.ReactNode,
-    children?: MenuItem[],
+   label: React.ReactNode,
+   key: React.Key,
+   icon?: React.ReactNode,
+   children?: MenuItem[],
 ): MenuItem {
-    return {
-        key,
-        icon,
-        children,
-        label,
-    } as MenuItem;
+   return {
+      key,
+      icon,
+      children,
+      label,
+   } as MenuItem;
 }
 
 const items: MenuItem[] = [
-    getItem('Quản lý tài khoản', '1', <UserOutlined />),
-    getItem('Quản lý việc làm', '2', <PiShareNetworkBold />),
-    getItem('Quản lý loại việc làm', 'sub1', <MdOutlineWorkOutline />, [
-        getItem('Tom', '3'),
-        getItem('Bill', '4'),
-        getItem('Alex', '5'),
-    ]),
-    getItem('Quản lý skill', 'sub2', <VscGroupByRefType />, [
-        getItem('Team 1', '6'),
-        getItem('Team 2', '8')
-    ]),
-    getItem('Thống kê', '9', <VscGraph />),
+   getItem('Quản lý tài khoản', '1', <UserOutlined />),
+   getItem('Quản lý việc làm', '2', <PiShareNetworkBold />),
+   getItem('Quản lý loại việc làm', 'sub1', <MdOutlineWorkOutline />, [
+      getItem('Tom', '3'),
+      getItem('Bill', '4'),
+      getItem('Alex', '5'),
+   ]),
+   getItem('Quản lý skill', 'sub2', <VscGroupByRefType />, [
+      getItem('Team 1', '6'),
+      getItem('Team 2', '8')
+   ]),
+   getItem('Thống kê', '9', <VscGraph />),
+
 ];
 
-const TestTemplate: React.FC = () => {
-    const [collapsed, setCollapsed] = useState(false);
-    const {
-        token: { colorBgContainer, borderRadiusLG },
-    } = theme.useToken();
 
-    return (
-        <Layout style={{ minHeight: '100vh' }}>
+// ====================================================
+//                      MAIN
+// ====================================================
+const TestTemplate = () => {
+   const [collapsed, setCollapsed] = useState(false);
+   const {
+      token: { colorBgContainer, borderRadiusLG },
+   } = theme.useToken();
+
+   return (
+      <Layout>
+         <Header style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <Link to="/" className="flex justify-center items-center gap-2">
+               <img src={logo} alt="" className="w-10 h-10" loading="lazy" />
+               <h1 className="text-xl h-full text-white font-bold">EasyJob</h1>
+            </Link>
+
+            {/* PROFILE */}
+            <UserMenu />
+         </Header>
+
+
+
+         <Layout>
             <Sider
-                width={220}
-                collapsible collapsed={collapsed}
-                onCollapse={(value) => setCollapsed(value)}>
-                <Link to="/" className="flex justify-center items-center gap-2">
-                    <img src={logo} alt="" className="w-10 h-10 my-3" loading="lazy" />
-                    <h1 className={`${collapsed ? "hidden" : "block"} text-xl h-full text-white font-bold`}>EasyJob</h1>
-                </Link>
+               trigger={null}
+               collapsible collapsed={collapsed}
+               style={{ height: 'full' }}
+               width={220}
+            >
 
-                <Menu theme="dark" defaultSelectedKeys={['1']} mode="inline" items={items} />
+               <div className="demo-logo-vertical" />
+               <Menu
+                  theme="dark"
+                  mode="inline"
+                  defaultSelectedKeys={['1']}
+
+                  // CÁCH VIẾT 1: ⭐⭐⭐⭐⭐
+                  items={items}
+
+               // CÁCH VIẾT 2: ⭐⭐⭐⭐⭐
+               // items={[
+               //    {
+               //       key: '1',
+               //       icon: <UserOutlined />,
+               //       label: 'Quản lý tài khoản',
+               //       children: [
+               //          {
+               //             key: '1-1',
+               //             label: 'Danh sách tài khoản',
+               //          },
+               //          {
+               //             key: '1-2',
+               //             label: 'Thêm tài khoản mới',
+               //          },
+               //       ],
+               //    },
+               //    {
+               //       key: '2',
+               //       icon: <PiShareNetworkBold />,
+               //       label: 'Quản lý việc làm',
+               //    },
+               //    {
+               //       key: '3',
+               //       icon: <MdOutlineWorkOutline />,
+               //       label: 'Quản lý loại việc làm',
+               //    },
+               //    {
+               //       key: '4',
+               //       icon: <VscGroupByRefType />,
+               //       label: 'Quản lý skill',
+               //    },
+               //    {
+               //       key: '5',
+               //       icon: <VscGraph />,
+               //       label: 'Thống kê',
+               //    },
+               // ]}
+               />
             </Sider>
 
+
             <Layout>
-                <Header
-                    className='flex items-center justify-end'
-                    style={{ padding: 0, background: colorBgContainer }} >
+               <Header style={{ padding: 0, background: colorBgContainer }}>
+                  {/* BUTTON THU GỌN MENU */}
+                  <Button
+                     type="text"
+                     icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
+                     onClick={() => setCollapsed(!collapsed)}
+                     style={{
+                        fontSize: '16px',
+                        width: 64,
+                        height: 64,
+                        background: 'red'       // ############⭐⭐⭐⭐⭐   
+                     }}
+                  />
 
-                    <Space size="middle">
-                        <Badge className='me-6' count={100}>
-                            <Avatar className='bg-white hover:bg-slate-200' size="large" >
-                                <BellOutlined className='text-2xl text-black' />
-                            </Avatar>
-                        </Badge>
-                    </Space>
+                  {/* BUTTON EXPORT DATA EXCEL */}
+               </Header>
 
-                    <UserMenu />
-                </Header>
 
-                <Content style={{ margin: '0 16px' }}>
-                    <Breadcrumb style={{ margin: '16px 0' }}>
-                        <Breadcrumb.Item>User</Breadcrumb.Item>
-                        <Breadcrumb.Item>Bill</Breadcrumb.Item>
-                    </Breadcrumb>
-                    <div
-                        style={{
-                            padding: 24,
-                            minHeight: 360,
-                            background: colorBgContainer,
-                            borderRadius: borderRadiusLG,
-                        }}
-                    >
-                        Bill is a cat.
-                    </div>
-                </Content>
-                <Footer style={{ textAlign: 'center' }}>
-                    EasyJob ©01-10-{new Date().getFullYear()} Created by @Ductandev
-                </Footer>
+               <Content
+                  style={{
+                     padding: 12,
+                     margin: '24px 16px',
+                     minHeight: 280,
+                     background: colorBgContainer,
+                     borderRadius: borderRadiusLG,
+                     backgroundColor: 'pink'    // ############⭐⭐⭐⭐⭐   
+                  }}
+               >
+
+
+                  {/* CONTENT */}
+                  <TableData />
+
+
+
+               </Content>
+               <Footer style={{ textAlign: 'center' }}>
+                  EasyJob ©{new Date().getFullYear()}
+               </Footer>
             </Layout>
-        </Layout>
-    );
-};
+         </Layout>
+      </Layout>
+   );
+}
 
 export default TestTemplate;

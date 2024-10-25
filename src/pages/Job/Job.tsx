@@ -1,8 +1,5 @@
-import React from 'react'
 
-type Props = {}
-
-function Job({}: Props) {
+function Job() {
   return (
     <div>Job</div>
   )
