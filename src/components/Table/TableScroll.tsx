@@ -120,7 +120,7 @@ const columns: TableColumnsType<DataType> = [
   },
 ];
 
-const dataSource = Array.from({ length: 100 }).map<DataType>((_, i) => ({
+const dataSource = Array.from({ length: 60 }).map<DataType>((_, i) => ({
   key: i,
   name: `Edward King ${i}`,
   age: 32,
@@ -131,6 +131,7 @@ const TableScroll: React.FC = () => {
   const { styles } = useStyle();
   return (
     <Table<DataType>
+        size='small'
       className={styles.customTable}
       columns={columns}
       dataSource={dataSource}

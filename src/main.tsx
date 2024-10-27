@@ -15,7 +15,6 @@ import { store } from "./redux/configStore.ts";
 
 import ProtectedRoute from "./components/ProtectedRoute/ProtectedRoute.tsx";
 import RedirectIfAuthenticated from "./components/RedirectIfAuthenticated/RedirectIfAuthenticated.tsx";
-import TestTemplate from "./Templates/TestTemplate.tsx";
 
 const AdminTemplate = lazy(() => import("./Templates/AdminTemplate.tsx"));
 const ExcelTemplate = lazy(() => import("./components/ExportExcel/ExportExcel.tsx"));
@@ -38,7 +37,8 @@ root.render(
           <Route path="/" element={<Navigate to="/user" replace />} />
 
           <Route element={<ProtectedRoute requiredRole={"ROLE_ADMIN"} />}>
-            <Route path="/*" element={<AdminTemplate />}> {/* Sử dụng `path="/*"` để hỗ trợ các route con */}
+          {/* Sử dụng `path="/*"` để hỗ trợ các route con */}
+            <Route path="/*" element={<AdminTemplate />}> 
               <Route path="user" element={<User />} />
               <Route path="job" element={<Job />} />
               <Route path="typejob/:id" element={<TypeJob />} />
@@ -47,7 +47,6 @@ root.render(
             </Route>
 
             <Route path="excel" element={<ExcelTemplate />} />
-            <Route path="test" element={<TestTemplate />} />
           </Route>
 
           {/* Sử dụng RedirectIfAuthenticated để chặn truy cập vào trang login nếu đã đăng nhập */}

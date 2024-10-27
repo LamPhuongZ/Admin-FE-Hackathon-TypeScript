@@ -1,11 +1,14 @@
 import React, { useEffect } from 'react';
 import type { TableColumnsType } from 'antd';
 import { Button, Table } from 'antd';
+import { getDistrict, getProvince } from '../../Hooks/useAddress/useAddress'
 
 import { useDispatch, useSelector } from 'react-redux';
 import { DispatchType, RootState } from '../../redux/configStore';
 import { allProfileUserAsyncAction, deleteProfileAsyncAction, userProfileApi } from '../../redux/reducers/userReducer';
 import { createStyles } from 'antd-style';
+import { PiSealWarningFill } from 'react-icons/pi';
+import { BiSolidBadgeCheck } from 'react-icons/bi';
 
 
 const useStyle = createStyles(({ css }) => ({
@@ -24,10 +27,10 @@ const useStyle = createStyles(({ css }) => ({
 
 const User: React.FC = () => {
   const { allUserProfile } = useSelector((state: RootState) => state.userReducer)
-  console.log("🚀 ~ file: User.tsx:27 ~ allUserProfile:", allUserProfile);
-  const { styles } = useStyle();
   const dispatch: DispatchType = useDispatch();
 
+  const { styles } = useStyle();
+  
   // ==== CALL API ⭐====
   const getDataListingUser = async (
     keyword: string,
@@ -39,12 +42,19 @@ const User: React.FC = () => {
     isDeleted: boolean,
   ): Promise<void> => {
     const actionApi = allProfileUserAsyncAction({ keyword, role, page, size, sort, direction, isDeleted });
-    dispatch(actionApi);
+    await dispatch(actionApi);
   };
 
   useEffect(() => {
     getDataListingUser('', 1, 0, 100, 'id', 'DESC', false);
   }, []);
+
+  // ==== CALL API ⭐====
+  const handleDelete = async (id: number) => {
+    await dispatch(deleteProfileAsyncAction(id));
+    // Gọi lại API để cập nhật danh sách người dùng sau khi xóa thành công
+    await getDataListingUser('', 1, 0, 100, 'id', 'DESC', false);
+  };
 
 
   const data: userProfileApi[] | undefined = allUserProfile?.content?.map((item, index) => ({
@@ -88,35 +98,44 @@ const User: React.FC = () => {
       fixed: 'left',
       render: (text) => {
         return text
-        .toLowerCase()
-        .split(' ')
-        .map((word: string) => word.charAt(0).toUpperCase() + word.slice(1))
-        .join(' ');
+          .toLowerCase()
+          .split(' ')
+          .map((word: string) => word.charAt(0).toUpperCase() + word.slice(1))
+          .join(' ');
       },
     },
     {
       title: 'Email',
       dataIndex: 'email',
       key: 'email',
-      width: 100,
+      width: 200,
     },
     {
       title: 'Số điện thoại',
       dataIndex: 'phone',
       key: 'phone',
-      width: 150,
+      width: 120,
     },
     {
       title: 'Ngày sinh',
       dataIndex: 'dob',
       key: 'dob',
-      width: 150,
+      width: 120,
     },
     {
       title: 'Xác thực',
       dataIndex: 'isVerified',
       key: 'isVerified',
       width: 100,
+      render: (item?: boolean) => (
+        <div className='flex justify-center'>
+          {item ? (
+            <BiSolidBadgeCheck className='text-[#57c81f] text-[24px]' />
+          ) : (
+            <PiSealWarningFill className='text-[#faad15] text-[24px]' />
+          )}
+        </div>
+      )
     },
     {
       title: 'Số công việc',
@@ -134,13 +153,21 @@ const User: React.FC = () => {
       title: 'Quận huyện',
       dataIndex: 'districtId',
       key: 'districtId',
-      width: 100,
+      width: 140,
+      render: (districtId: string | number) => {
+        const district = getDistrict(districtId);
+        return district?.name || "chưa xác định";
+      }
     },
     {
       title: 'Tỉnh thành',
       dataIndex: 'provinceId',
       key: 'provinceId',
-      width: 100,
+      width: 180,
+      render: (provinceId: string | number) => {
+        const province = getProvince(provinceId);
+        return province?.name || "chưa xác định";
+      }
     },
     {
       title: 'Hành động',
@@ -150,10 +177,7 @@ const User: React.FC = () => {
       fixed: 'right',
       render: (_: any, record: userProfileApi) => (
         <div style={{ display: 'flex', justifyContent: 'center' }}>
-          <Button type="primary" danger onClick={() => {
-            const action = deleteProfileAsyncAction(record.id);
-            dispatch(action)
-          }}>
+          <Button type="primary" danger onClick={() => handleDelete(record.id)}>
             X
           </Button>
         </div>
@@ -173,6 +197,7 @@ const User: React.FC = () => {
       rowKey="id"
       bordered
       scroll={{ x: 'max-content', y: 370 }}
+      pagination={{ pageSize: 10 }}
     />
   );
 };
