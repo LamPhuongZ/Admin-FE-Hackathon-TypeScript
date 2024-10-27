@@ -65,15 +65,7 @@ const EditableCell: React.FC<React.PropsWithChildren<EditableCellProps>> = ({
   );
 };
 
-
-
-
-
-
 type Props = {}
-
-
-
 
 
 function TableData({}: Props) {

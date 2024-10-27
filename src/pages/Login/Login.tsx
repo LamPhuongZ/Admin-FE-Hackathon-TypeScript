@@ -11,7 +11,7 @@ import { useNavigate } from "react-router-dom";
 
 import { loginAsyncAction } from "../../redux/reducers/authReducer";
 import { toast } from "react-toastify";
-import { toastOptions } from "../../utils/toastOptions";
+import { toastOptions } from "../../Utils/toastOptions";
 
 
 export interface UserLoginFrm {
@@ -35,7 +35,7 @@ const LoginPage: React.FC = () => {
     if(token){
       navigate('/');
     }
-  },[token, navigate])
+  },[token])
 
 
   const loginFrm = useFormik<UserLoginFrm>({

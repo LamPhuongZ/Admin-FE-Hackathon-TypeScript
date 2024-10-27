@@ -1,7 +1,7 @@
 import React from "react";
 import { Navigate, Outlet } from "react-router-dom";
-import { getDataTextStorage } from "../../utils/utilMethod";
-import { ACCESS_TOKEN } from "../../utils/config";
+import { getDataTextStorage } from "../../Utils/utilMethod";
+import { ACCESS_TOKEN } from "../../Utils/config";
 import { jwtDecode } from "jwt-decode";
 
 // Định nghĩa kiểu cho các props của ProtectedRoute
@@ -18,6 +18,7 @@ interface UserLogin {
 
 const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ requiredRole }) => {
   const accessToken = getDataTextStorage(ACCESS_TOKEN);  
+  console.log("🚀 ~ file: ProtectedRoute.tsx:21 ~ accessToken:", accessToken);
 
   if (!accessToken) {
     return <Navigate to="/login" />;
@@ -33,7 +34,8 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ requiredRole }) => {
     }
 
     if (decodedToken.role !== requiredRole) {
-      return <Navigate to="/" />; 
+      localStorage.removeItem(ACCESS_TOKEN)
+      return <Navigate to="/login" />; 
     }
 
   } catch (error) {
@@ -43,7 +45,7 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ requiredRole }) => {
     return <Navigate to="/login" />;
   }
 
-  return <Outlet />; // Hiển thị route được bảo vệ nếu vai trò khớp
+  return <Outlet />; // ⭐ Hiển thị route được bảo vệ nếu vai trò khớp
 };
 
 export default ProtectedRoute;

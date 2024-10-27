@@ -1,12 +1,12 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
-import { ACCESS_TOKEN, httpClient } from '../../utils/config';
+import { ACCESS_TOKEN, httpClient } from '../../Utils/config';
 import { UserLoginFrm } from '../../pages/Login/Login';
 
 import 'react-toastify/dist/ReactToastify.css';
-import { getDataTextStorage, setDataTextStorage } from '../../utils/utilMethod';
+import { getDataTextStorage, setDataTextStorage } from '../../Utils/utilMethod';
 
 import { toast } from 'react-toastify';
-import { toastOptions } from '../../utils/toastOptions';
+import { toastOptions } from '../../Utils/toastOptions';
 import { jwtDecode } from 'jwt-decode';
 
 

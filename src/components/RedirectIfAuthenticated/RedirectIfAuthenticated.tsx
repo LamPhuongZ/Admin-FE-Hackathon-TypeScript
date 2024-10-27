@@ -7,8 +7,8 @@ const RedirectIfAuthenticated = ({ children }: { children: JSX.Element }) => {
   const { token } = useSelector((state: RootState) => state.authReducer);
 
   if (token) {
-    // Nếu đã có token thì điều hướng đến trang chủ
-    return <Navigate to="/" replace />; 
+    // Nếu đã có token thì điều hướng đến trang user
+    return <Navigate to="/user" replace />; 
   }
 
   return children; // Nếu chưa có token, render nội dung bên trong (trang login)

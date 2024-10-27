@@ -4,11 +4,12 @@ import { useDispatch, useSelector } from 'react-redux'
 import { DispatchType, RootState } from '../../../redux/configStore'
 import { useNavigate } from 'react-router-dom';
 import { profileUserAsyncAction } from '../../../redux/reducers/userReducer'
-import { clearStorage } from '../../../utils/utilMethod'
-import { ACCESS_TOKEN, USER_LOGIN } from '../../../utils/config'
+import { clearStorage } from '../../../Utils/utilMethod'
+import { ACCESS_TOKEN, USER_LOGIN } from '../../../Utils/config'
 
 import { PiSignOut } from "react-icons/pi";
 import { UserOutlined } from '@ant-design/icons';
+import img from "../../../assets/images/face.jpg";
 import Avartar from '../../Avartar/Avartar'
 import MenuItem from './MenuItem'
 
@@ -49,29 +50,27 @@ export default function UserMenu() {
   // Sử dụng useEffect để gọi hàm lấy thông tin userProfile khi token thay đổi
   useEffect(() => {
     getUserProfile()
-  }, [getUserProfile, token])
+  }, [getUserProfile])
 
   const renderAvatar = () => {
-    // Kiểm tra userProfile có tồn tại và không phải là một mảng rỗng
-    if (typeof userProfile !== "undefined") {
-      return (
-        <>
-          <img
-            className='rounded-full h-[43px] w-[43px]'
-            src={userProfile?.avatar}
-            height={43}
-            width={43}
-            alt='Avatar'>
-          </img>
-        </>
-      )
-    } else {
-      return (
-        <>
-          <Avartar />
-        </>
-      )
+    // Kiểm tra userProfile có tồn tại và không phải là một mảng rỗng\
+    if (!userProfile || !userProfile.avatar) {
+      return <Avartar />;
     }
+  
+    return (
+      <img
+        className="rounded-full h-[43px] w-[43px]"
+        src={userProfile.avatar}
+        height={43}
+        width={43}
+        alt="Avatar"
+        onError={(e) => {
+          // Replace broken image with default avatar if there's an error loading it
+          (e.target as HTMLImageElement).src = img;
+        }}
+      />
+    );
   }
 
 
@@ -82,7 +81,7 @@ export default function UserMenu() {
     return (
       <>
         <div className="px-4 py-4">
-          <p className="font-bold">{userProfile?.fullname}</p>
+          <p className="font-bold">{(userProfile?.fullname || '').toUpperCase()}</p>
           <p className="text-gray-500 text-sm">{userEmail}</p>
         </div>
         <hr />
@@ -106,7 +105,6 @@ export default function UserMenu() {
             window.scrollTo(0, 0); // Cuộn về đầu trang khi component được render
             window.location.reload(); //f5
           }, 700);
-          navigate('/');
           setIsOpen(false);
         }}
           label={

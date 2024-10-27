@@ -16,7 +16,7 @@ export const httpClient:AxiosInstance = axios.create({
 
 httpClient.interceptors.request.use((req: InternalAxiosRequestConfig<any>) => {
   const accessToken = localStorage.getItem(ACCESS_TOKEN);
-  console.log("🚀 ~ file: config.ts:19 ~ httpClient.interceptors.request.use ~ accessToken:", accessToken);
+
   if (req.headers) {
       req.headers.set('Authorization', accessToken ? `Bearer ${accessToken}` : '');
   }
