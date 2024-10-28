@@ -1,6 +1,6 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import type { TableColumnsType } from 'antd';
-import { Button, Table } from 'antd';
+import { Button, Space, Input, Table, Select } from 'antd';
 import { getDistrict, getProvince } from '../../Hooks/useAddress/useAddress'
 
 import { useDispatch, useSelector } from 'react-redux';
@@ -9,7 +9,11 @@ import { allProfileUserAsyncAction, deleteProfileAsyncAction, userProfileApi } f
 import { createStyles } from 'antd-style';
 import { PiSealWarningFill } from 'react-icons/pi';
 import { BiSolidBadgeCheck } from 'react-icons/bi';
+import imgFace from "../../assets/images/face.jpg"
+import { UserOutlined } from '@ant-design/icons';
 
+
+const { Search } = Input;
 
 const useStyle = createStyles(({ css }) => ({
   customTable: css`
@@ -29,8 +33,20 @@ const User: React.FC = () => {
   const { allUserProfile } = useSelector((state: RootState) => state.userReducer)
   const dispatch: DispatchType = useDispatch();
 
+
   const { styles } = useStyle();
-  
+
+  const [searchValue, setSearchValue] = useState("");
+  const [role, setRole] = useState<number>(1);                          // State cho `role`, giá trị mặc định là 1
+
+  const handleChangeInput = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchValue(e.target.value);
+  };
+
+  const handleChangeSelect = (value: number) => {
+    setRole(value);                                                     // Cập nhật role khi thay đổi trong select
+  };
+
   // ==== CALL API ⭐====
   const getDataListingUser = async (
     keyword: string,
@@ -46,20 +62,29 @@ const User: React.FC = () => {
   };
 
   useEffect(() => {
-    getDataListingUser('', 1, 0, 100, 'id', 'DESC', false);
+    getDataListingUser('', role, 0, 100, 'id', 'DESC', false);
   }, []);
+
+  // Call API mỗi khi searchValue thay đổi
+  useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      getDataListingUser(searchValue, role, 0, 100, 'id', 'DESC', false); // Truyền searchValue vào keyword
+    }, 300);                                                           // Delay để tránh call API liên tục khi người dùng gõ
+
+    return () => clearTimeout(timeoutId);                              // Xóa timeout khi searchValue thay đổi trước khi gọi API mới
+  }, [searchValue, role]);
 
   // ==== CALL API ⭐====
   const handleDelete = async (id: number) => {
     await dispatch(deleteProfileAsyncAction(id));
     // Gọi lại API để cập nhật danh sách người dùng sau khi xóa thành công
-    await getDataListingUser('', 1, 0, 100, 'id', 'DESC', false);
+    await getDataListingUser(searchValue, role, 0, 100, 'id', 'DESC', false);
   };
 
-
+  // Tạo stt tự động tăng thêm vào object, bắt đầu từ 1
   const data: userProfileApi[] | undefined = allUserProfile?.content?.map((item, index) => ({
     ...item,
-    stt: index + 1,  // Tạo stt tự động tăng thêm vào object, bắt đầu từ 1
+    stt: index + 1,
   }));
 
   const columns: TableColumnsType<userProfileApi> = [
@@ -86,7 +111,7 @@ const User: React.FC = () => {
       fixed: 'left',
       render: (text) => (
         <div style={{ display: 'flex', justifyContent: 'center' }}>
-          <img src={text} width={50} alt="..." />
+          {text ? <img src={text} width={50} alt="..." /> : <img src={imgFace} width={50} alt="..." />}
         </div>
       ),
     },
@@ -189,16 +214,45 @@ const User: React.FC = () => {
 
 
   return (
-    <Table<userProfileApi>
-      size='small'
-      className={`${styles.customTable} p-2`}
-      columns={columns}
-      dataSource={data}
-      rowKey="id"
-      bordered
-      scroll={{ x: 'max-content', y: 370 }}
-      pagination={{ pageSize: 10 }}
-    />
+    <>
+      <Space className='flex justify-between items-center mx-2 p-2'>
+        <Space>
+          <Search
+            placeholder="Tìm theo tên và email"
+            allowClear
+            enterButton
+            size="large"
+            value={searchValue}
+            onChange={handleChangeInput}
+          />
+          <Select
+            defaultValue={1}
+            style={{ width: 120 }}
+            size="large"
+            onChange={handleChangeSelect}
+            options={[
+              { value: 1, label: 'Tất cả' },
+              { value: 2, label: 'Employer' },
+              { value: 3, label: 'Applier' }
+            ]}
+          />
+        </Space>
+        <div className='flex items-center text-2xl font-medium'>
+          <h1 className='text-2xl me-1'>{allUserProfile?.totalElements}</h1>
+          <UserOutlined />
+        </div>
+      </Space>
+      <Table<userProfileApi>
+        size='small'
+        className={`${styles.customTable} p-2`}
+        columns={columns}
+        dataSource={data}
+        rowKey="id"
+        bordered
+        scroll={{ x: 'max-content', y: 370 }}
+        pagination={{ pageSize: 10 }}
+      />
+    </>
   );
 };
 

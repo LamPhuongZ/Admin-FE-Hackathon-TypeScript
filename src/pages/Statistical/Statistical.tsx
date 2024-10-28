@@ -1,10 +1,10 @@
-import TableData from "../../components/Table/Table"
+import SearchInput from "../../components/Search/Search"
 
 type Props = {}
 
 function Statistical({}: Props) {
   return (
-    <div><TableData/></div>
+    <div><SearchInput/></div>
   )
 }
 

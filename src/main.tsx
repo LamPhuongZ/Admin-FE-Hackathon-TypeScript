@@ -4,6 +4,7 @@ import { FloatButton } from "antd";
 import { unstable_HistoryRouter as HistoryRouter, Navigate, Route, Routes } from 'react-router-dom';
 import { createBrowserHistory } from "history";
 import ReactDOM from "react-dom/client";
+
 import Loading from "./components/Loading/index.tsx";
 
 import { ToastContainer } from 'react-toastify';

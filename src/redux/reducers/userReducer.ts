@@ -39,13 +39,13 @@ export interface userProfileApi {
 }
 
 export interface userProfileState {
-  isLoadingChangeProfile: boolean;
+  isLoadingProfile: boolean;
   userProfile: userProfileApi | null;
   allUserProfile: listUserProfileApi | null;
 }
 
 const initialState: userProfileState = {
-  isLoadingChangeProfile: false,
+  isLoadingProfile: false,
   userProfile: getDataJsonStorage("UserProfile"),
   allUserProfile: null,
 };
@@ -57,35 +57,35 @@ const userReducer = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(deleteProfileAsyncAction.pending, (state) => {
-        state.isLoadingChangeProfile = true;
+        state.isLoadingProfile = true;
       })
       .addCase(deleteProfileAsyncAction.fulfilled, (state) => {
-        state.isLoadingChangeProfile = false;
+        state.isLoadingProfile = false;
       })
       .addCase(deleteProfileAsyncAction.rejected, (state) => {
-        state.isLoadingChangeProfile = false;
+        state.isLoadingProfile = false;
       })
 
       .addCase(profileUserAsyncAction.pending, (state) => {
-        state.isLoadingChangeProfile = true;
+        state.isLoadingProfile = true;
       })
       .addCase(profileUserAsyncAction.fulfilled, (state, action) => {
-        state.isLoadingChangeProfile = false;
+        state.isLoadingProfile = false;
         state.userProfile = action.payload;
       })
       .addCase(profileUserAsyncAction.rejected, (state) => {
-        state.isLoadingChangeProfile = false;
+        state.isLoadingProfile = false;
       })
 
       .addCase(allProfileUserAsyncAction.pending, (state) => {
-        state.isLoadingChangeProfile = true;
+        state.isLoadingProfile = true;
       })
       .addCase(allProfileUserAsyncAction.fulfilled, (state, action) => {
-        state.isLoadingChangeProfile = false;
+        state.isLoadingProfile = false;
         state.allUserProfile = action.payload;
       })
       .addCase(allProfileUserAsyncAction.rejected, (state) => {
-        state.isLoadingChangeProfile = false;
+        state.isLoadingProfile = false;
       });
   },
 });

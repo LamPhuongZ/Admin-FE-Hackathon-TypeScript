@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Breadcrumb, Layout, Menu, Space, theme } from "antd";
+import { Layout, Menu, Space, theme } from "antd";
 import { Avatar, Badge } from "antd";
 import { Link, Route, Routes } from "react-router-dom";
 
@@ -70,7 +70,7 @@ const AdminTemplate: React.FC = () => {
         collapsed={collapsed}
         onCollapse={(value) => setCollapsed(value)}
       >
-        <Link to="/test" className="flex justify-center items-center gap-2">
+        <Link to="/" className="flex justify-center items-center gap-2">
           <img src={logo} alt="" className="w-10 h-10 my-3" loading="lazy" />
           <h1
             className={`
@@ -110,12 +110,10 @@ const AdminTemplate: React.FC = () => {
         </Header>
 
         <Content style={{ margin: "0 16px" }}>
-          <Breadcrumb
-            style={{ margin: "16px 0" }}
-            items={[{ title: "User" }, { title: "Bill" }]}
-          />
+
 
           <div
+            className="mt-4"
             style={{
               padding: 12,
               minHeight: 360,

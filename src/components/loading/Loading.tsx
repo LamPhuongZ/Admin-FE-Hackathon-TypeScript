@@ -4,8 +4,9 @@ import { RootState } from "../../redux/configStore";
 
 type Props = {};
 
-export default function Loading({}: Props) {
+export default function IsLoading({}: Props) {
   const { isLoadingAuth } = useSelector((state: RootState) => state.authReducer);
+  const { isLoadingProfile } = useSelector((state: RootState) => state.userReducer);
   
   return (
     <div
@@ -16,7 +17,8 @@ export default function Loading({}: Props) {
         zIndex: 10,
         background: "#e8e8e8",
         display:
-          isLoadingAuth
+          isLoadingAuth ||
+          isLoadingProfile
             ? "flex"
             : "none",
         justifyContent: "center",
