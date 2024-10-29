@@ -31,6 +31,11 @@ const renderContent = (value: any, _row: DataType, index: number) => {
   return obj;
 };
 
+
+
+
+
+
 const columns: ColumnsType<DataType> = [
   {
     title: "Name",
@@ -140,6 +145,12 @@ const data: DataType[] = [
   },
 ];
 
+
+
+
+
+
+
 // Hàm kiểm tra kiểu
 const isColumnType = (
   column: ColumnType<DataType> | any
@@ -175,7 +186,13 @@ const ExportExcel: React.FC<Props> = () => {
       >
         Export File Excel
       </Button>
-      <Table<DataType> bordered columns={columns} dataSource={data} />
+
+
+      <Table<DataType>
+        bordered
+        columns={columns}
+        dataSource={data}
+      />
     </div>
   );
 };

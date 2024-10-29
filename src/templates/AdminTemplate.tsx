@@ -3,11 +3,12 @@ import { Layout, Menu, Space, theme } from "antd";
 import { Avatar, Badge } from "antd";
 import { Link, Route, Routes } from "react-router-dom";
 
-import { BellOutlined, UserOutlined } from "@ant-design/icons";
 import logo from "../assets/images/logo-company.png";
+import { BellOutlined, UserOutlined } from "@ant-design/icons";
 import { PiShareNetworkBold } from "react-icons/pi";
 import { MdOutlineWorkOutline } from "react-icons/md";
 import { VscGraph, VscGroupByRefType } from "react-icons/vsc";
+import { BiSolidBadgeCheck } from "react-icons/bi";
 
 import UserMenu from "../components/Header/Navbar/UserMenu";
 import User from "../pages/User/User";
@@ -15,7 +16,6 @@ import Job from "../pages/Job/Job";
 import TypeJob from "../pages/TypeJob/TypeJob";
 import Skill from "../pages/Skill/Skill";
 import Statistical from "../pages/Statistical/Statistical";
-import { BiSolidBadgeCheck } from "react-icons/bi";
 
 const { Header, Content, Footer, Sider } = Layout;
 
@@ -110,8 +110,6 @@ const AdminTemplate: React.FC = () => {
         </Header>
 
         <Content style={{ margin: "0 16px" }}>
-
-
           <div
             className="mt-4"
             style={{

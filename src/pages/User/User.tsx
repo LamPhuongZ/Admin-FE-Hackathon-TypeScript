@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import type { TableColumnsType } from 'antd';
 import { Button, Space, Input, Table, Select } from 'antd';
-import { getDistrict, getProvince } from '../../Hooks/useAddress/useAddress'
+import { getDistrict, getProvince } from '../../Hooks/useAddress/useAddress';
 
 import { useDispatch, useSelector } from 'react-redux';
 import { DispatchType, RootState } from '../../redux/configStore';
@@ -9,9 +9,19 @@ import { allProfileUserAsyncAction, deleteProfileAsyncAction, userProfileApi } f
 import { createStyles } from 'antd-style';
 import { PiSealWarningFill } from 'react-icons/pi';
 import { BiSolidBadgeCheck } from 'react-icons/bi';
-import imgFace from "../../assets/images/face.jpg"
+import imgFace from "../../assets/images/face.jpg";
 import { UserOutlined } from '@ant-design/icons';
 
+import { ColumnType } from 'antd/es/table';
+import { Excel } from "antd-table-saveas-excel";
+
+
+// Định nghĩa kiểu cột cho Excel
+interface IExcelColumn {
+  title: string;
+  dataIndex: string;
+  key?: string;
+}
 
 const { Search } = Input;
 
@@ -29,8 +39,9 @@ const useStyle = createStyles(({ css }) => ({
 }));
 
 
+
 const User: React.FC = () => {
-  const { allUserProfile } = useSelector((state: RootState) => state.userReducer)
+  const { allUserProfile } = useSelector((state: RootState) => state.userReducer);
   const dispatch: DispatchType = useDispatch();
 
 
@@ -211,6 +222,23 @@ const User: React.FC = () => {
   ];
 
 
+  // ====================================================
+  //                EXPORT EXCEL FILE
+  // ====================================================
+  // Hàm kiểm tra kiểu
+  const isColumnType = (
+    column: ColumnType<userProfileApi> | any
+  ): column is ColumnType<userProfileApi> => {
+    return !!column.dataIndex;
+  };
+
+  // Tạo kiểu cột cho Excel
+  const excelColumns: IExcelColumn[] = columns
+    .filter(isColumnType) // Lọc các cột chỉ có dataIndex
+    .map((col) => ({
+      title: col.title as string,
+      dataIndex: col.dataIndex as string,
+    }));
 
 
   return (
@@ -236,8 +264,22 @@ const User: React.FC = () => {
               { value: 3, label: 'Applier' }
             ]}
           />
+          <Button
+            size="large"
+            onClick={() => {
+              const excel = new Excel();
+              excel
+                .addSheet("DanhSachNguoiDung")
+                .addColumns(excelColumns)           // Sử dụng excelColumns thay vì columns của Table
+                .addDataSource(data || [])          // Sử dụng [] nếu data là undefined
+                .saveAs("DanhSachNguoiDung.xlsx");
+            }}
+          >
+            Export File Excel
+          </Button>
         </Space>
         <div className='flex items-center text-2xl font-medium'>
+          <img className='me-2' src="https://emoji.slack-edge.com/T0172CCPGUW/party-blob/d7253707fa13e9ee.gif" width="30" />
           <h1 className='text-2xl me-1'>{allUserProfile?.totalElements}</h1>
           <UserOutlined />
         </div>

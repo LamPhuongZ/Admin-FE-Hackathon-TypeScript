@@ -38,8 +38,8 @@ root.render(
           <Route path="/" element={<Navigate to="/user" replace />} />
 
           <Route element={<ProtectedRoute requiredRole={"ROLE_ADMIN"} />}>
-          {/* Sử dụng `path="/*"` để hỗ trợ các route con */}
-            <Route path="/*" element={<AdminTemplate />}> 
+            {/* Sử dụng `path="/*"` để hỗ trợ các route con */}
+            <Route path="/*" element={<AdminTemplate />}>
               <Route path="user" element={<User />} />
               <Route path="job" element={<Job />} />
               <Route path="typejob/:id" element={<TypeJob />} />

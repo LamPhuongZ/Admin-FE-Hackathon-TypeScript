@@ -40,12 +40,14 @@ export interface userProfileApi {
 
 export interface userProfileState {
   isLoadingProfile: boolean;
+  closeInput: boolean;
   userProfile: userProfileApi | null;
   allUserProfile: listUserProfileApi | null;
 }
 
 const initialState: userProfileState = {
   isLoadingProfile: false,
+  closeInput: false,
   userProfile: getDataJsonStorage("UserProfile"),
   allUserProfile: null,
 };
@@ -75,6 +77,16 @@ const userReducer = createSlice({
       })
       .addCase(profileUserAsyncAction.rejected, (state) => {
         state.isLoadingProfile = false;
+      })
+
+      .addCase(changeProfileAsyncAction.pending, (state) => {
+        state.closeInput = false;
+      })
+      .addCase(changeProfileAsyncAction.fulfilled, (state) => {
+        state.closeInput = true;
+      })
+      .addCase(changeProfileAsyncAction.rejected, (state) => {
+        state.closeInput = false;
       })
 
       .addCase(allProfileUserAsyncAction.pending, (state) => {
@@ -144,6 +156,25 @@ export const allProfileUserAsyncAction = createAsyncThunk(
     }
   }
 );
+
+export const changeProfileAsyncAction = createAsyncThunk("changeProfileAsyncAction", async (changeUserProfiles: userProfileApi) => {
+  try {
+    const res = await httpClient.put(`/api/v1/self`, changeUserProfiles);
+
+    let userLoginData = getDataJsonStorage(USER_LOGIN);
+    if (userLoginData) {
+      userLoginData = res.data.data
+      setDataJsonStorage(USER_LOGIN, userLoginData);
+    }
+
+    toast.success('Cập nhật thành công!', toastOptions);
+
+  } catch (err) {
+    toast.error('Cập nhật thất bại!', toastOptions);
+    console.log("🚀 ~ file: userReducer.ts:81 ~ changeProfileAsyncAction ~ err:", err)
+    throw (err)
+  }
+})
 
 export const deleteProfileAsyncAction = createAsyncThunk("deleteProfileAsyncAction",
   async (id: number) => {
