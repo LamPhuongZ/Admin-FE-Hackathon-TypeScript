@@ -16,8 +16,8 @@ export interface listUserProfileApi {
   last: boolean;
   numberOfElements: number;
   empty: boolean;
-
 }
+
 export interface userProfileApi {
   id: number;
   email: string;
