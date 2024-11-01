@@ -3,7 +3,7 @@ import { ACCESS_TOKEN, httpClient } from '../../Utils/config';
 import { UserLoginFrm } from '../../pages/Login/Login';
 
 import 'react-toastify/dist/ReactToastify.css';
-import { getDataTextStorage, setDataTextStorage } from '../../Utils/utilMethod';
+import { setDataTextStorage } from '../../Utils/utilMethod';
 
 import { toast } from 'react-toastify';
 import { toastOptions } from '../../Utils/toastOptions';
@@ -22,14 +22,10 @@ export interface UserLoginApi {
 }
 
 export interface UserState {
-  token: UserLoginApi | undefined;
   isLoadingAuth: boolean;
 }
 
 const initialState: UserState = {
-  token: getDataTextStorage(ACCESS_TOKEN)
-    ? { "access-token": getDataTextStorage(ACCESS_TOKEN)! } // Kiểm tra nếu có token trong localStorage
-    : undefined,
   isLoadingAuth: false,
 };
 
@@ -51,8 +47,7 @@ const authReducer = createSlice({
       .addCase(loginAsyncAction.pending, (state) => {
         state.isLoadingAuth = true;
       })
-      .addCase(loginAsyncAction.fulfilled, (state, action) => {
-        state.token = action.payload;
+      .addCase(loginAsyncAction.fulfilled, (state) => {
         state.isLoadingAuth = false;
       })
       .addCase(loginAsyncAction.rejected, (state) => {
@@ -77,6 +72,7 @@ export const loginAsyncAction = createAsyncThunk("loginAsyncAction", async (user
       return 
     }
 
+    // ⭐Lưu vào trong LocalStorage
     setDataTextStorage(ACCESS_TOKEN, res.data.data['access-token']);
     toast.success('Đăng nhập thành công!', toastOptions);
 

@@ -133,6 +133,18 @@ const Job: React.FC = () => {
       fixed: 'left',
     },
     {
+      title: 'Tiêu đề',
+      dataIndex: 'title',
+      key: 'title',
+      width: 200,
+    },
+    {
+      title: 'Mô tả',
+      dataIndex: 'description',
+      key: 'description',
+      width: 250,
+    },
+    {
       title: <div style={{ textAlign: 'center' }}>Hình ảnh</div>,
       dataIndex: 'images',
       key: 'images',
@@ -148,18 +160,6 @@ const Job: React.FC = () => {
           )}
         </div>
       ),
-    },
-    {
-      title: 'Tiêu đề',
-      dataIndex: 'title',
-      key: 'title',
-      width: 200,
-    },
-    {
-      title: 'Mô tả',
-      dataIndex: 'description',
-      key: 'description',
-      width: 250,
     },
     {
       title: 'Thời gian',
@@ -285,7 +285,7 @@ const Job: React.FC = () => {
       <Space className='flex justify-between items-center mx-2 p-2'>
         <Space>
           <Search
-            placeholder="Tìm theo tên và email"
+            placeholder="Tìm theo tiêu đề"
             allowClear
             enterButton
             size="large"

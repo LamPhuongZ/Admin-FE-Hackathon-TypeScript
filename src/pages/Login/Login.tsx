@@ -1,12 +1,12 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { FaArrowRight, FaArrowLeft } from "react-icons/fa";
 import logo from "../../assets/images/logo-company.png";
 
 import { useFormik } from "formik";
 import * as yup from "yup";
 
-import { useDispatch, useSelector } from "react-redux";
-import { DispatchType, RootState } from "../../redux/configStore";
+import { useDispatch } from "react-redux";
+import { DispatchType } from "../../redux/configStore";
 import { useNavigate } from "react-router-dom";
 
 import { loginAsyncAction } from "../../redux/reducers/authReducer";
@@ -20,23 +20,11 @@ export interface UserLoginFrm {
 }
 
 const LoginPage: React.FC = () => {
-  const { token } = useSelector((state: RootState) => state.authReducer);
-
-  const [active, setActive] = useState<boolean>(false);
-
-  const toggleActive = () => {
-    setActive(!active);
-  };
-
-  const dispatch: DispatchType = useDispatch();
+  const [active, setActive] = useState(false);
   const navigate = useNavigate();
+  const dispatch: DispatchType = useDispatch();
 
-  useEffect(()=>{
-    if(token){
-      navigate('/');
-    }
-  },[token])
-
+  const toggleActive = () => setActive(!active);
 
   const loginFrm = useFormik<UserLoginFrm>({
     initialValues: {
@@ -58,12 +46,16 @@ const LoginPage: React.FC = () => {
         .matches(/[A-Z]/, "Password phải chứa ít nhất một chữ cái viết hoa.")
         .matches(/[!@#$%^&*(),.?":{}|<>]/, "Password phải chứa ít nhất một ký tự đặc biệt."),
     }),
-    onSubmit: (values: UserLoginFrm) => {
-      const actionApi = loginAsyncAction(values);
-      dispatch(actionApi);
+    onSubmit: async (values: UserLoginFrm) => {
+      try {
+        const actionApi = await loginAsyncAction(values);
+        await dispatch(actionApi);
+        navigate('/')
+      } catch (error) {
+        console.log(error)
+      }
     },
   });
-
 
   return (
     <div className={`flex justify-center items-center min-h-screen w-full`}>
@@ -94,10 +86,10 @@ const LoginPage: React.FC = () => {
                   type="email"
                   placeholder="Email"
                   className="w-full h-full px-2 text-base border-none bg-transparent outline-none placeholder:text-[#A9A8A9]"
-                  onInput={loginFrm.handleChange} 
+                  onInput={loginFrm.handleChange}
                   onBlur={loginFrm.handleBlur}
-                  />
-                  {loginFrm.errors.username && <p className="text-left text-rose-500 text-sm px-2">{loginFrm.errors.username}</p>}
+                />
+                {loginFrm.errors.username && <p className="text-left text-rose-500 text-sm px-2">{loginFrm.errors.username}</p>}
               </div>
 
               <div className="my-[30px] w-[330px] h-[48px] bg-[#EEEDEF]">
@@ -106,7 +98,7 @@ const LoginPage: React.FC = () => {
                   type="password"
                   placeholder="Password"
                   className="w-full h-full px-2 text-base border-none bg-transparent outline-none placeholder:text-[#A9A8A9]"
-                  onInput={loginFrm.handleChange} 
+                  onInput={loginFrm.handleChange}
                   onBlur={loginFrm.handleBlur}
                 />
                 {loginFrm.errors.password && <p className="text-left text-rose-500 text-sm px-2">{loginFrm.errors.password}</p>}
@@ -170,7 +162,7 @@ const LoginPage: React.FC = () => {
               <button
                 type="button"
                 className="hover:text-black hover:drop-shadow-2xl inline-block outline-none bg-[#3e8fff] text-white uppercase text-[15px] font-extrabold py-[12px] px-[45px] rounded-[22px] border border-white cursor-pointer"
-                onClick={()=> { toast.error('Đăng ký thất bại!', toastOptions);}}
+                onClick={() => { toast.error('Đăng ký thất bại!', toastOptions); }}
               >
                 Sign Up
               </button>

@@ -1,14 +1,14 @@
-import { useSelector } from "react-redux";
 import { Navigate } from "react-router-dom";
-import { RootState } from "../../redux/configStore";
+import { getDataTextStorage } from "../../Utils/utilMethod";
+import { ACCESS_TOKEN } from "../../Utils/config";
 
 // Component để kiểm tra token và điều hướng nếu người dùng đã đăng nhập
 const RedirectIfAuthenticated = ({ children }: { children: JSX.Element }) => {
-  const { token } = useSelector((state: RootState) => state.authReducer);
+  const accessToken = getDataTextStorage(ACCESS_TOKEN);
 
-  if (token) {
+  if (accessToken) {
     // Nếu đã có token thì điều hướng đến trang user
-    return <Navigate to="/user" replace />; 
+    return <Navigate to="/user" replace />;
   }
 
   return children; // Nếu chưa có token, render nội dung bên trong (trang login)

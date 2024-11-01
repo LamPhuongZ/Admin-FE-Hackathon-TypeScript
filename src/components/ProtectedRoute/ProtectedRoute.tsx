@@ -18,10 +18,11 @@ interface UserLogin {
 
 const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ requiredRole }) => {
   const accessToken = getDataTextStorage(ACCESS_TOKEN);  
-  console.log("🚀 ~ file: ProtectedRoute.tsx:21 ~ accessToken:", accessToken);
 
   if (!accessToken) {
-    return <Navigate to="/login" />;
+
+    console.log(accessToken)
+    return <Navigate to="/login" replace/>;
   }
 
   try {

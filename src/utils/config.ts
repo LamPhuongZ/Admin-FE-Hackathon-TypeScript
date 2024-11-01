@@ -1,98 +1,106 @@
 import axios, { AxiosError, AxiosInstance, AxiosResponse, InternalAxiosRequestConfig } from "axios";
 import { routeLink } from "../main";
 import { getDataTextStorage } from "./utilMethod";
-import { jwtDecode } from "jwt-decode"
+import { jwtDecode } from "jwt-decode";
 
-//setup hằng số
-export const ACCESS_TOKEN:string = 'access_token';
-export const USER_LOGIN:string = 'userLogin'
-export const DOMAIN:string = 'https://api.easyjob.io.vn';
+// Constants
+export const ACCESS_TOKEN: string = 'access_token';
+export const USER_LOGIN: string = 'userLogin';
+export const DOMAIN: string = 'https://api.easyjob.io.vn';
 
-//interceptor
-export const httpClient:AxiosInstance = axios.create({
-  baseURL:DOMAIN,
-  timeout:30000
+// Create Axios instance with default settings
+export const httpClient: AxiosInstance = axios.create({
+    baseURL: DOMAIN,
+    timeout: 30000
 });
 
-httpClient.interceptors.request.use((req: InternalAxiosRequestConfig<any>) => {
-  const accessToken = localStorage.getItem(ACCESS_TOKEN);
+// Check token expiration
+function isTokenExpired(token: string): boolean {
+    try {
+        const decodedToken: any = jwtDecode(token);
+        const currentTime = Date.now() / 1000;
+        return decodedToken.exp < currentTime;
+    } catch (error) {
+        console.error("Error decoding token:", error);
+        return true; // Assume expired if decoding fails
+    }
+}
 
-  if (req.headers) {
-      req.headers.set('Authorization', accessToken ? `Bearer ${accessToken}` : '');
-  }
-  return req;
-}, (err: AxiosError) => {
-  return Promise.reject(err);
-});
+// ==================================================
+//              Request Interceptor
+// ==================================================
+httpClient.interceptors.request.use(
+    (req: InternalAxiosRequestConfig<any>) => {
+        // ⭐ kiểm tra token có lưu trong localStorage hay không trước
+        const accessToken = getDataTextStorage(ACCESS_TOKEN);
 
-
-//Cấu hình cho response (kết quả trả về từ api)
-httpClient.interceptors.response.use(
-    (response: AxiosResponse<any>) => {
-        // Xử lý response thành công
-        return response;
+        if (accessToken) {
+            // Check if token is expired
+            if (isTokenExpired(accessToken)) {
+                console.log("Token expired. Redirecting to login.");
+                localStorage.removeItem(ACCESS_TOKEN);
+                localStorage.removeItem(USER_LOGIN);
+                alert("Your session has expired. Please log in again.");
+                routeLink.push('/login');
+                throw new axios.Cancel("Token expired"); // Cancel the request
+            }
+            req.headers.Authorization = `Bearer ${accessToken}`;
+        }
+        return req;
     },
+    (err: AxiosError) => Promise.reject(err)
+);
+
+
+// ==================================================
+//               Response Interceptor
+// ==================================================
+httpClient.interceptors.response.use(
+    (response: AxiosResponse<any>) => response,
     (error: AxiosError) => {
-        // Xử lý lỗi response
         if (error.response) {
-            // Server đã trả về một response nhưng với mã trạng thái lỗi
-            switch (error.response.status) {
+            const { status } = error.response;
+
+            switch (status) {
                 case 401:
-                    const token = getDataTextStorage(ACCESS_TOKEN);
-                    if (token) {
-                        let decodedToken: any = jwtDecode(token);
-                        console.log("Decoded Token", decodedToken);
-                        let currentDate = new Date();
-  
-                        // JWT exp is in seconds
-                        if (decodedToken.exp * 1000 < currentDate.getTime()) {
-                            console.log("Token expired.");
-                            //Remove userlogin trong localstorage
-                            localStorage.removeItem(USER_LOGIN);
-                            //Chuyển hướng về đăng nhập
-                            routeLink.push('/login');
-                        }
-                    } else {
-                        console.log("No token found");
-                    }
-  
-                    // Xử lý lỗi 401 Unauthorized
-                    alert("Unauthorized access - perhaps the user is not logged in or token expired.");
-                    routeLink.push('/login');
+                    handleUnauthorizedError();
                     break;
-  
+
                 case 403:
-                    // Xử lý lỗi 403 Forbidden
                     alert("Forbidden - you don't have permission to access this resource.");
                     routeLink.push('/login');
                     break;
-  
+
                 case 404:
-                    // Xử lý lỗi 404 Not Found
                     alert("Resource not found.");
                     break;
-  
+
                 case 500:
-                    // Xử lý lỗi 500 Internal Server Error
                     alert("Internal server error.");
                     break;
-  
+
                 default:
-                    // Xử lý các mã lỗi khác
-                    console.error(`Error ${error.response.status}: ${error.response.statusText}`);
+                    console.error(`Error ${status}: ${error.response.statusText}`);
             }
         } else if (error.request) {
-            // Request đã được gửi nhưng không nhận được phản hồi từ server
             console.error("No response received from server.");
         } else {
-            // Một số lỗi khác xảy ra trong quá trình thiết lập request
-            console.error("Error setting up request: ", error.message);
+            console.error("Error setting up request:", error.message);
         }
-  
+
         return Promise.reject(error);
     }
-  );
-  
+);
+
+// Handle 401 Unauthorized error
+function handleUnauthorizedError() {
+    localStorage.removeItem(ACCESS_TOKEN);
+    localStorage.removeItem(USER_LOGIN);
+    alert("Unauthorized access. Please log in.");
+    routeLink.push('/login');
+}
+
+
 
 
 /* statusCode thông dụng : 
