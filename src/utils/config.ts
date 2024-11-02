@@ -33,13 +33,13 @@ httpClient.interceptors.request.use(
     (req: InternalAxiosRequestConfig<any>) => {
         // ⭐ kiểm tra token có lưu trong localStorage hay không trước
         const accessToken = getDataTextStorage(ACCESS_TOKEN);
+        console.log("🚀 ~ file: config.ts:36 ~ accessToken:", accessToken);
 
         if (accessToken) {
             // Check if token is expired
             if (isTokenExpired(accessToken)) {
                 console.log("Token expired. Redirecting to login.");
                 localStorage.removeItem(ACCESS_TOKEN);
-                localStorage.removeItem(USER_LOGIN);
                 alert("Your session has expired. Please log in again.");
                 routeLink.push('/login');
                 throw new axios.Cancel("Token expired"); // Cancel the request
@@ -95,7 +95,6 @@ httpClient.interceptors.response.use(
 // Handle 401 Unauthorized error
 function handleUnauthorizedError() {
     localStorage.removeItem(ACCESS_TOKEN);
-    localStorage.removeItem(USER_LOGIN);
     alert("Unauthorized access. Please log in.");
     routeLink.push('/login');
 }

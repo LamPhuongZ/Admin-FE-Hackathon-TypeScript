@@ -16,20 +16,22 @@ export interface listJobeApi {
 
 export interface jobApi {
     jobId:             number;
-    images:            Image[];
     title:             string;
     description:       string;
+    images:            Image[];
     duration:          number;
     phone:             string;
     address:           string;
+    districtId:        number;
+    provinceId:        number;
     contactPerson:     string;
     startDate:         Date;
     endDate:           Date;
     postedDate:        Date;
     jobType:           JobType;
     jobSkills:         JobSkill[];
-    verified:          boolean;
     jobApprovalStatus: string;
+    isDeleted:         boolean;
 }
 
 export interface Image {

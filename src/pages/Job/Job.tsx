@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import type { TableColumnsType } from 'antd';
-import { Button, Space, Input, Table, Select } from 'antd';
+import { Button, Space, Input, Table, Select, DatePicker } from 'antd';
 
 import { useDispatch, useSelector } from 'react-redux';
 import { DispatchType, RootState } from '../../redux/configStore';
@@ -15,6 +15,9 @@ import { ColumnType } from 'antd/es/table';
 import { Excel } from "antd-table-saveas-excel";
 import { allListJobAsyncAction, Image, jobApi } from '../../redux/reducers/jobReducer';
 import moment from 'moment';
+import { getDistrict, getProvince } from '../../Hooks/useAddress/useAddress';
+import { RiCloseCircleFill } from 'react-icons/ri';
+import { RangePickerProps } from 'antd/es/date-picker';
 
 
 // Định nghĩa kiểu cột cho Excel
@@ -25,6 +28,8 @@ interface IExcelColumn {
 }
 
 const { Search } = Input;
+const { RangePicker } = DatePicker;
+
 
 const useStyle = createStyles(({ css }) => ({
   customTable: css`
@@ -49,6 +54,8 @@ const Job: React.FC = () => {
   const { styles } = useStyle();
 
   const [searchValue, setSearchValue] = useState("");
+  const [startDate, setStartDate] = useState<string>("");
+  const [endDate, setEndDate] = useState<string>("");
   const [approvalStatus, setApprovalStatus] = useState<string>("ALL");                 // State cho `approvalStatus`, giá trị mặc định là 1
 
   const handleChangeInput = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -57,6 +64,12 @@ const Job: React.FC = () => {
 
   const handleChangeSelect = (value: string) => {
     setApprovalStatus(value);                                                     // Cập nhật approvalStatus khi thay đổi trong select
+  };
+
+  const onChangeDate: RangePickerProps['onChange'] = (date, dateString) => {
+    setStartDate(dateString[0]);
+    setEndDate(dateString[1]);
+    console.log(dateString);
   };
 
   // ==== CALL API ⭐====
@@ -91,25 +104,29 @@ const Job: React.FC = () => {
 
   useEffect(() => {
     // Gọi API với các tham số mặc định hoặc giá trị từ `searchValue`
-    getListingJob(0, 100, 'id', 'desc', searchValue, undefined, undefined, undefined, undefined, undefined, approvalStatus);
+    getListingJob(0, 100, 'id', 'desc', searchValue, undefined, undefined, startDate, endDate, undefined, approvalStatus);
   }, [searchValue]); // Thêm `searchValue` vào mảng phụ thuộc nếu cần tự động gọi lại API khi `searchValue` thay đổi
 
 
   // Call API mỗi khi searchValue thay đổi
   useEffect(() => {
     const timeoutId = setTimeout(() => {
-      getListingJob(0, 100, 'id', 'desc', searchValue, undefined, undefined, undefined, undefined, undefined, approvalStatus); // Truyền searchValue vào keyword
+      getListingJob(0, 100, 'id', 'desc', searchValue, undefined, undefined, startDate, endDate, undefined, approvalStatus); // Truyền searchValue vào keyword
     }, 300);                                                           // Delay để tránh call API liên tục khi người dùng gõ
 
     return () => clearTimeout(timeoutId);                              // Xóa timeout khi searchValue thay đổi trước khi gọi API mới
-  }, [searchValue, approvalStatus]);
+  }, [searchValue, startDate, endDate,  approvalStatus]);
 
   // ==== CALL API ⭐====
-  const handleDelete = async (id: number) => {
-    await dispatch(deleteProfileAsyncAction(id));
-    // Gọi lại API để cập nhật danh sách người dùng sau khi xóa thành công
-    await getListingJob(0, 100, 'id', 'desc', searchValue, undefined, undefined, undefined, undefined, undefined, approvalStatus);
-  };
+  // const handleDelete = async (id: number) => {
+  //   await dispatch(deleteProfileAsyncAction(id));
+  //   // Gọi lại API để cập nhật danh sách người dùng sau khi xóa thành công
+  //   await getListingJob(0, 100, 'id', 'desc', searchValue, undefined, undefined, startDate, endDate, undefined, approvalStatus);
+  // };
+
+
+
+
 
   // Tạo stt tự động tăng thêm vào object, bắt đầu từ 1
   const data: jobApi[] | undefined = allListJob?.content?.map((item, index) => ({
@@ -144,23 +161,23 @@ const Job: React.FC = () => {
       key: 'description',
       width: 250,
     },
-    {
-      title: <div style={{ textAlign: 'center' }}>Hình ảnh</div>,
-      dataIndex: 'images',
-      key: 'images',
-      width: 300,
-      render: (images: Image[]) => (
-        <div style={{ display: 'flex', justifyContent: 'center', gap: '10px' }}>
-          {images && images.length > 0 ? (
-            images.slice(0, 4).map((image, index) => (                          // Lấy tối đa 4 tấm hình thôi
-              <img key={index} src={image.url} width={50} alt="Job Image" />
-            ))
-          ) : (
-            <img src={imgFace} width={50} alt="Default Image" />
-          )}
-        </div>
-      ),
-    },
+    // {
+    //   title: <div style={{ textAlign: 'center' }}>Hình ảnh</div>,
+    //   dataIndex: 'images',
+    //   key: 'images',
+    //   width: 300,
+    //   render: (images: Image[]) => (
+    //     <div style={{ display: 'flex', justifyContent: 'center', gap: '10px' }}>
+    //       {images && images.length > 0 ? (
+    //         images.slice(0, 4).map((image, index) => (
+    //           <img key={index} src={image.url} width={50} alt="Job Image" />
+    //         ))
+    //       ) : (
+    //         <img src={imgFace} width={50} alt="Default Image" />
+    //       )}
+    //     </div>
+    //   ),
+    // },    
     {
       title: 'Thời gian',
       dataIndex: 'duration',
@@ -183,6 +200,26 @@ const Job: React.FC = () => {
       dataIndex: 'address',
       key: 'address',
       width: 250,
+    },
+    {
+      title: 'Quận huyện',
+      dataIndex: 'districtId',
+      key: 'districtId',
+      width: 140,
+      render: (districtId: string | number) => {
+        const district = getDistrict(districtId);
+        return district?.name || "chưa xác định";
+      }
+    },
+    {
+      title: 'Tỉnh thành',
+      dataIndex: 'provinceId',
+      key: 'provinceId',
+      width: 180,
+      render: (provinceId: string | number) => {
+        const province = getProvince(provinceId);
+        return province?.name || "chưa xác định";
+      }
     },
     {
       title: 'Người liên hệ',
@@ -225,39 +262,41 @@ const Job: React.FC = () => {
     // },
     {
       title: 'Xác thực',
-      dataIndex: 'verified',
-      key: 'verified',
-      width: 80,
-      render: (item?: boolean) => (
-        <div className='flex justify-center'>
-          {item ? (
-            <BiSolidBadgeCheck className='text-[#57c81f] text-[24px]' />
-          ) : (
-            <PiSealWarningFill className='text-[#faad15] text-[24px]' />
-          )}
-        </div>
-      )
-    },
-    {
-      title: 'Trạng thái',
       dataIndex: 'jobApprovalStatus',
       key: 'jobApprovalStatus',
-      width: 150,
-    },
-    {
-      title: 'Hành động',
-      dataIndex: 'delete',
-      key: 'delete',
-      width: 100,
+      width: 80,
       fixed: 'right',
-      render: (_: any, record: jobApi) => (
-        <div style={{ display: 'flex', justifyContent: 'center' }}>
-          <Button type="primary" danger onClick={() => handleDelete(record.jobId)}>
-            X
-          </Button>
+      render: (item?: string) => (
+        <div className='flex justify-center'>
+          {(() => {
+            switch (item) {
+              case "PENDING":
+                return <BiSolidBadgeCheck className='text-[#57c81f] text-[24px]' />;
+              case "APPROVED":
+                return <PiSealWarningFill className='text-[#faad15] text-[24px]' />;
+              case "REJECTED":
+                return <RiCloseCircleFill className='text-red-500 text-[24px]' />;
+              default:
+                return null;
+            }
+          })()}
         </div>
-      )
-    },
+      ),
+    }
+    // {
+    //   title: 'Hành động',
+    //   dataIndex: 'delete',
+    //   key: 'delete',
+    //   width: 100,
+    //   fixed: 'right',
+    //   render: (_: any, record: jobApi) => (
+    //     <div style={{ display: 'flex', justifyContent: 'center' }}>
+    //       <Button type="primary" danger onClick={() => handleDelete(record.jobId)}>
+    //         X
+    //       </Button>
+    //     </div>
+    //   )
+    // },
   ];
 
 
@@ -292,6 +331,11 @@ const Job: React.FC = () => {
             value={searchValue}
             onChange={handleChangeInput}
           />
+
+          <Space direction="vertical" size={12}>
+            <RangePicker size='large' onChange={onChangeDate} />
+          </Space>
+
           <Select
             defaultValue="ALL"
             style={{ width: 120 }}
@@ -329,7 +373,7 @@ const Job: React.FC = () => {
         className={`${styles.customTable} p-2`}
         columns={columns}
         dataSource={data}
-        rowKey="id"
+        rowKey="jobId"
         bordered
         scroll={{ x: 'max-content', y: 370 }}
         pagination={{ pageSize: 10 }}

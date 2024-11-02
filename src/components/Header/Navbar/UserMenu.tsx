@@ -4,7 +4,7 @@ import { DispatchType, RootState } from '../../../redux/configStore';
 import { useNavigate } from 'react-router-dom';
 import { profileUserAsyncAction } from '../../../redux/reducers/userReducer';
 import { clearStorage, getDataTextStorage } from '../../../Utils/utilMethod';
-import { ACCESS_TOKEN, USER_LOGIN } from '../../../Utils/config';
+import { ACCESS_TOKEN } from '../../../Utils/config';
 
 import { PiSignOut } from "react-icons/pi";
 import { UserOutlined } from '@ant-design/icons';
@@ -96,7 +96,6 @@ export default function UserMenu() {
         <MenuItem onClick={handleProfiles} label={<><UserOutlined style={{ marginRight: '8px' }} /> Thông tin tài khoản</>} />
         <MenuItem onClick={() => {
           clearStorage(ACCESS_TOKEN);
-          clearStorage(USER_LOGIN);
           toast.success('Đăng xuất thành công!', {
             position: "top-center",
             autoClose: 300,
