@@ -4,16 +4,14 @@ import { Button, Space, Input, Table, Select, DatePicker } from 'antd';
 
 import { useDispatch, useSelector } from 'react-redux';
 import { DispatchType, RootState } from '../../redux/configStore';
-import { deleteProfileAsyncAction } from '../../redux/reducers/userReducer';
 import { createStyles } from 'antd-style';
 import { PiSealWarningFill } from 'react-icons/pi';
 import { BiSolidBadgeCheck } from 'react-icons/bi';
-import imgFace from "../../assets/images/face.jpg";
 import { UserOutlined } from '@ant-design/icons';
 
 import { ColumnType } from 'antd/es/table';
 import { Excel } from "antd-table-saveas-excel";
-import { allListJobAsyncAction, Image, jobApi } from '../../redux/reducers/jobReducer';
+import { allListJobAsyncAction, jobApi } from '../../redux/reducers/jobReducer';
 import moment from 'moment';
 import { getDistrict, getProvince } from '../../Hooks/useAddress/useAddress';
 import { RiCloseCircleFill } from 'react-icons/ri';
@@ -66,7 +64,7 @@ const Job: React.FC = () => {
     setApprovalStatus(value);                                                     // Cập nhật approvalStatus khi thay đổi trong select
   };
 
-  const onChangeDate: RangePickerProps['onChange'] = (date, dateString) => {
+  const onChangeDate: RangePickerProps['onChange'] = (_date, dateString) => {
     setStartDate(dateString[0]);
     setEndDate(dateString[1]);
     console.log(dateString);

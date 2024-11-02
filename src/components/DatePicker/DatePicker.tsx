@@ -10,7 +10,7 @@ const { RangePicker } = DatePicker;
 
 const dateFormat = 'YYYY/MM/DD';
 
-const onChange: RangePickerProps['onChange'] = (date, dateString) => {
+const onChange: RangePickerProps['onChange'] = (_date, dateString) => {
     console.log(dateString);
   };
 

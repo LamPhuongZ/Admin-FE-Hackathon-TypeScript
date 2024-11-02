@@ -1,5 +1,4 @@
 import App from "../../components/DatePicker/DatePicker"
-import SearchInput from "../../components/Search/Search"
 
 type Props = {}
 
