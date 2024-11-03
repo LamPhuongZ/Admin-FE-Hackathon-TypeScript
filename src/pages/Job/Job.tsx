@@ -100,6 +100,7 @@ const Job: React.FC = () => {
     await dispatch(actionApi);
   };
 
+  // ==== CALL API ⭐====
   useEffect(() => {
     // Gọi API với các tham số mặc định hoặc giá trị từ `searchValue`
     getListingJob(0, 100, 'id', 'desc', searchValue, undefined, undefined, startDate, endDate, undefined, approvalStatus);
@@ -113,9 +114,9 @@ const Job: React.FC = () => {
     }, 300);                                                           // Delay để tránh call API liên tục khi người dùng gõ
 
     return () => clearTimeout(timeoutId);                              // Xóa timeout khi searchValue thay đổi trước khi gọi API mới
-  }, [searchValue, startDate, endDate,  approvalStatus]);
+  }, [searchValue, startDate, endDate, approvalStatus]);
 
-  // ==== CALL API ⭐====
+
   // const handleDelete = async (id: number) => {
   //   await dispatch(deleteProfileAsyncAction(id));
   //   // Gọi lại API để cập nhật danh sách người dùng sau khi xóa thành công
@@ -259,19 +260,19 @@ const Job: React.FC = () => {
     //   width: 140,
     // },
     {
-      title: 'Xác thực',
+      title: 'Trạng thái xác thực',
       dataIndex: 'jobApprovalStatus',
       key: 'jobApprovalStatus',
-      width: 80,
+      width: 100,
       fixed: 'right',
       render: (item?: string) => (
         <div className='flex justify-center'>
           {(() => {
             switch (item) {
               case "PENDING":
-                return <BiSolidBadgeCheck className='text-[#57c81f] text-[24px]' />;
-              case "APPROVED":
                 return <PiSealWarningFill className='text-[#faad15] text-[24px]' />;
+              case "APPROVED":
+                return <BiSolidBadgeCheck className='text-[#57c81f] text-[24px]' />;
               case "REJECTED":
                 return <RiCloseCircleFill className='text-red-500 text-[24px]' />;
               default:
@@ -351,10 +352,10 @@ const Job: React.FC = () => {
             onClick={() => {
               const excel = new Excel();
               excel
-                .addSheet("DanhSachNguoiDung")
+                .addSheet("DanhSachCongViec")
                 .addColumns(excelColumns)           // Sử dụng excelColumns thay vì columns của Table
                 .addDataSource(data || [])          // Sử dụng [] nếu data là undefined
-                .saveAs("DanhSachNguoiDung.xlsx");
+                .saveAs("DanhSachCongViec.xlsx");
             }}
           >
             Export File Excel

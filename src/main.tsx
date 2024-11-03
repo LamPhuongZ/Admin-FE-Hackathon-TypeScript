@@ -42,8 +42,8 @@ root.render(
             <Route path="/*" element={<AdminTemplate />}>
               <Route path="user" element={<User />} />
               <Route path="job" element={<Job />} />
-              <Route path="typejob/:id" element={<TypeJob />} />
-              <Route path="skill/:teamId" element={<Skill />} />
+              <Route path="typejob" element={<TypeJob />} />
+              <Route path="skill" element={<Skill />} />
               <Route path="statistical" element={<Statistical />} />
             </Route>
 

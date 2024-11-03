@@ -19,7 +19,7 @@ import Statistical from "../pages/Statistical/Statistical";
 
 const { Header, Content, Footer, Sider } = Layout;
 
-const AdminTemplate: React.FC = () => {
+const AdminTemplateBackup: React.FC = () => {
   const [collapsed, setCollapsed] = useState(false);
   const {
     token: { colorBgContainer, borderRadiusLG },
@@ -29,11 +29,14 @@ const AdminTemplate: React.FC = () => {
 
   // Lấy key từ đường dẫn hiện tại
   const getSelectedKey = () => {
-    if (location.pathname.startsWith("/user")) return "1";
-    if (location.pathname.startsWith("/job")) return "2";
-    if (location.pathname.startsWith("/typejob")) return "3";
-    if (location.pathname.startsWith("/skill")) return "4";
-    if (location.pathname.startsWith("/statistical")) return "5";
+    if (location.pathname.startsWith("/user"))          return "1";
+    if (location.pathname.startsWith("/job"))           return "2";
+    if (location.pathname.startsWith("/typejob/tom"))   return "3";
+    if (location.pathname.startsWith("/typejob/bill"))  return "4";
+    if (location.pathname.startsWith("/typejob/alex"))  return "5";
+    if (location.pathname.startsWith("/skill/team1"))   return "6";
+    if (location.pathname.startsWith("/skill/team2"))   return "8";
+    if (location.pathname.startsWith("/statistical"))   return "9";
     return "1"; // Mặc định nếu không khớp
   };
 
@@ -49,18 +52,27 @@ const AdminTemplate: React.FC = () => {
       icon: <PiShareNetworkBold />,
     },
     {
-      label: <Link to="/typejob">Quản lý loại việc làm</Link>,
-      key: "3",
+      label: "Quản lý loại việc làm",
+      key: "sub1",
       icon: <MdOutlineWorkOutline />,
+      children: [
+        { label: <Link to="/typejob/tom">Tom</Link>, key: "3" },
+        { label: <Link to="/typejob/bill">Bill</Link>, key: "4" },
+        { label: <Link to="/typejob/alex">Alex</Link>, key: "5" },
+      ],
     },
     {
-      label: <Link to="/skill">Quản lý skill</Link>,
-      key: "4",
+      label: "Quản lý skill",
+      key: "sub2",
       icon: <VscGroupByRefType />,
+      children: [
+        { label: <Link to="/skill/team1">Team 1</Link>, key: "6" },
+        { label: <Link to="/skill/team2">Team 2</Link>, key: "8" },
+      ],
     },
     {
       label: <Link to="/statistical">Thống kê</Link>,
-      key: "5",
+      key: "9",
       icon: <VscGraph />,
     },
   ];
@@ -91,8 +103,8 @@ const AdminTemplate: React.FC = () => {
           theme="dark"
           mode="inline"
           // defaultSelectedKeys={['1']}
-          // defaultOpenKeys={["sub1", "sub2"]} // Tự động mở các menu con khi vào
           selectedKeys={[getSelectedKey()]} // Sử dụng hàm để lấy selectedKey từ URL
+          defaultOpenKeys={["sub1", "sub2"]} // Tự động mở các menu con khi vào
           items={items}
         />
       </Sider>
@@ -128,8 +140,8 @@ const AdminTemplate: React.FC = () => {
             <Routes>
               <Route path="/user" element={<User />} />
               <Route path="/job" element={<Job />} />
-              <Route path="/typejob" element={<TypeJob />} />
-              <Route path="/skill" element={<Skill />} />
+              <Route path="/typejob/:id" element={<TypeJob />} />
+              <Route path="/skill/:teamId" element={<Skill />} />
               <Route path="/statistical" element={<Statistical />} />
             </Routes>
           </div>
@@ -163,4 +175,4 @@ const AdminTemplate: React.FC = () => {
   );
 };
 
-export default AdminTemplate;
+export default AdminTemplateBackup;

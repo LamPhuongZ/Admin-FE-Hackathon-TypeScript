@@ -206,10 +206,10 @@ const User: React.FC = () => {
       }
     },
     {
-      title: 'Hành động',
+      title: 'Xóa người dùng',
       dataIndex: 'delete',
       key: 'delete',
-      width: 100,
+      width: 120,
       fixed: 'right',
       render: (_: any, record: userProfileApi) => (
         <div style={{ display: 'flex', justifyContent: 'center' }}>
