@@ -16,6 +16,7 @@ import Job from "../pages/Job/Job";
 import TypeJob from "../pages/TypeJob/TypeJob";
 import Skill from "../pages/Skill/Skill";
 import Statistical from "../pages/Statistical/Statistical";
+import Profile from "../pages/Profile/Profile";
 
 const { Header, Content, Footer, Sider } = Layout;
 
@@ -59,6 +60,10 @@ const AdminTemplate: React.FC = () => {
       label: <Link to="/statistical">Thống kê</Link>,
       key: "9",
       icon: <VscGraph />,
+    },
+    {
+      label: <Link to="/profile">Trang cá nhân</Link>,
+      key: "10",
     },
   ];
 
@@ -126,6 +131,7 @@ const AdminTemplate: React.FC = () => {
               <Route path="/typejob/:id" element={<TypeJob />} />
               <Route path="/skill/:teamId" element={<Skill />} />
               <Route path="/statistical" element={<Statistical />} />
+              <Route path="/profile" element={<Profile />} />
             </Routes>
           </div>
         </Content>

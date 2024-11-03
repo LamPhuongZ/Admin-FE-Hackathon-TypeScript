@@ -26,6 +26,7 @@ const TypeJob = lazy(() => import("./pages/TypeJob/TypeJob.tsx"));
 const Skill = lazy(() => import("./pages/Skill/Skill.tsx"));
 const Statistical = lazy(() => import("./pages/Statistical/Statistical.tsx"));
 const NotFoundPage = lazy(() => import("./pages/NotFoundPage/NotFoundPage.tsx"));
+const Profile = lazy(() => import("./pages/Profile/Profile.tsx"));
 
 export const routeLink: any = createBrowserHistory();
 
@@ -45,8 +46,9 @@ root.render(
               <Route path="typejob/:id" element={<TypeJob />} />
               <Route path="skill/:teamId" element={<Skill />} />
               <Route path="statistical" element={<Statistical />} />
+              <Route path="profile" element={<Profile />} />
             </Route>
-
+            
             <Route path="excel" element={<ExcelTemplate />} />
           </Route>
 

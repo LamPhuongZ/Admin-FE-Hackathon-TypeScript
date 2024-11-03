@@ -190,3 +190,83 @@
 //     </div>
 //   );
 // }
+import React, { useState, useEffect } from 'react';
+import { Card, Row, Col, Descriptions, Button, Typography,Avatar, Drawer } from 'antd';
+import { UserOutlined, MailOutlined, PhoneOutlined, CalendarOutlined, HomeOutlined, GlobalOutlined } from '@ant-design/icons';
+import { useDispatch, useSelector } from 'react-redux'
+import { DispatchType, RootState } from '../../redux/configStore'
+import axios from 'axios';
+import UpdateProfile from './UpdateProfile';
+import { getDistrict, getProvince } from '../../Hooks/useAddress/useAddress';
+import { getDataJsonStorage } from '../../Utils/utilMethod';
+import { ACCESS_TOKEN } from '../../Utils/config';
+
+const Profile = () => {
+  const [userData, setUserData] = useState(null);
+  const { token } = useSelector((state: RootState) => state.authReducer)
+  const { userProfile } = useSelector((state: RootState) => state.userReducer)
+  
+  const [isDrawerVisible, setIsDrawerVisible] = useState(false);
+
+  // Handlers cho drawer
+  const showDrawer = () => {
+    setIsDrawerVisible(true);
+  };
+
+  const closeDrawer = () => {
+    setIsDrawerVisible(false);
+  };
+
+  // Cách 2: Lấy trực tiếp
+
+const { Title } = Typography;
+  return (
+    <>
+    <div className="container mx-auto py-8 px-4">
+   {/* Thông tin chi tiết */}
+   <Card title="Thông tin cá nhân">
+   <div className='flex flex-col items-center gap-3'>
+          <Avatar size={150} src={userProfile?.avatar} icon={<UserOutlined />} draggable='false'/>
+          <Title level={3}>{userProfile?.fullname}</Title>
+        </div>
+        <Descriptions layout="vertical" column={{ xs: 1, sm: 2, md: 3 }}>
+          <Descriptions.Item  label={<div className='!flex items-center gap-2'><UserOutlined /> Họ và tên</div>}>
+            {userProfile?.fullname || 'Chưa cập nhật'}
+          </Descriptions.Item>
+          
+          <Descriptions.Item  label={<div className='!flex items-center gap-2'><MailOutlined /> Email</div>}>
+            {userProfile?.email || 'Chưa cập nhật'} 
+          </Descriptions.Item>
+          
+          <Descriptions.Item label={<div className='!flex items-center gap-2'><PhoneOutlined /> Số điện thoại</div>}>
+            {userProfile?.phone || 'Chưa cập nhật'}
+          </Descriptions.Item>
+          
+          
+          
+          <Descriptions.Item label={<div className='!flex items-center gap-2'><HomeOutlined /> Địa chỉ</div>}>
+            {userProfile?.address || 'Chưa cập nhật'}
+          </Descriptions.Item>
+
+          <Descriptions.Item label={<div className='!flex items-center gap-2'><GlobalOutlined />Thành phố</div>}>
+            {userProfile?.provinceId ? getProvince(userProfile.provinceId.toString())?.name : 'Chưa cập nhật'}
+          </Descriptions.Item>
+          
+          <Descriptions.Item label="Vai trò">
+            {userProfile?.isVerified || 'Admin'}
+          </Descriptions.Item>
+        </Descriptions>
+
+        <div className="mt-4 flex justify-end">
+        
+      <UpdateProfile getUserProfile={userProfile} />
+        </div>
+      </Card>
+      
+    </div>
+      
+    </>
+    )
+};
+
+export default Profile;

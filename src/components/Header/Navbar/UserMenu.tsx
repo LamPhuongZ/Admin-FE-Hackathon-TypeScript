@@ -52,6 +52,9 @@ export default function UserMenu() {
     getUserProfile()
   }, [getUserProfile])
 
+  console.log(userProfile)
+
+
   const renderAvatar = () => {
     // Kiểm tra userProfile có tồn tại và không phải là một mảng rỗng\
     if (!userProfile || !userProfile.avatar) {
@@ -60,7 +63,7 @@ export default function UserMenu() {
   
     return (
       <img
-        className="rounded-full h-[43px] w-[43px]"
+        className="rounded-full h-[43px] w-[43px] cursor-pointer"
         src={userProfile.avatar}
         height={43}
         width={43}
