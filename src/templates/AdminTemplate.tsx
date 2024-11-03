@@ -35,6 +35,7 @@ const AdminTemplate: React.FC = () => {
     if (location.pathname.startsWith("/typejob")) return "3";
     if (location.pathname.startsWith("/skill")) return "4";
     if (location.pathname.startsWith("/statistical")) return "5";
+    if (location.pathname.startsWith("/profile")) return "10";
     return "1"; // Mặc định nếu không khớp
   };
 

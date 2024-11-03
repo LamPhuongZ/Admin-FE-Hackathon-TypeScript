@@ -9,13 +9,13 @@ export interface skillApi {
   description: string;
 }
 
-export interface jobSkillState {
-  isLoadingJobSkill: boolean;
+export interface skillState {
+  isLoadingSkill: boolean;
   allSkill: skillApi[];
 }
 
 const initialState = {
-  isLoadingJobSkill: false,
+  isLoadingSkill: false,
   allSkill: []
 }
 
@@ -26,35 +26,35 @@ const skillReducer = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(getAllSkillAsyncAction.pending, (state) => {
-        state.isLoadingJobSkill = true;
+        state.isLoadingSkill = true;
       })
       .addCase(getAllSkillAsyncAction.fulfilled, (state, action) => {
-        state.isLoadingJobSkill = false;
+        state.isLoadingSkill = false;
         state.allSkill = action.payload;
       })
       .addCase(getAllSkillAsyncAction.rejected, (state) => {
-        state.isLoadingJobSkill = false;
+        state.isLoadingSkill = false;
       })
 
       .addCase(updateSkillAsyncAction.pending, (state) => {
-        state.isLoadingJobSkill = true;
+        state.isLoadingSkill = true;
       })
       .addCase(updateSkillAsyncAction.fulfilled, (state) => {
-        state.isLoadingJobSkill = false;
+        state.isLoadingSkill = false;
       })
       .addCase(updateSkillAsyncAction.rejected, (state) => {
-        state.isLoadingJobSkill = false;
+        state.isLoadingSkill = false;
       })
 
 
       .addCase(deleteSkillAsyncAction.pending, (state) => {
-        state.isLoadingJobSkill = true;
+        state.isLoadingSkill = true;
       })
       .addCase(deleteSkillAsyncAction.fulfilled, (state) => {
-        state.isLoadingJobSkill = false;
+        state.isLoadingSkill = false;
       })
       .addCase(deleteSkillAsyncAction.rejected, (state) => {
-        state.isLoadingJobSkill = false;
+        state.isLoadingSkill = false;
       })
   },
 });

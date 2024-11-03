@@ -73,7 +73,7 @@ const EditableCell: React.FC<React.PropsWithChildren<EditableCellProps>> = ({
 };
 
 
-const App: React.FC = () => {
+const Skill: React.FC = () => {
   const { allSkill } = useSelector((state: RootState) => state.skillReducer) as { allSkill: DataType[] };
   const dispatch: DispatchType = useDispatch();
 
@@ -309,4 +309,4 @@ const App: React.FC = () => {
   );
 };
 
-export default App;
+export default Skill;

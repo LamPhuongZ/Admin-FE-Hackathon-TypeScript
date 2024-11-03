@@ -1,14 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { Button, Col, DatePicker, Drawer, Input, Row, Select, Space, Form, Upload, message } from 'antd';
+import { Button, Col, DatePicker, Drawer, Input, Row, Select, Space, Form, message } from 'antd';
 import { userProfileApi } from '../../redux/reducers/userReducer'
-import { InboxOutlined } from '@ant-design/icons';
 import moment, { Moment } from 'moment';
 import axios from 'axios';
-import { getDistrictIdByName, getProvinceIdByName } from '../../Hooks/useAddress/useAddress';
 import addressData from '../../Hooks/useAddress/address.json';
-import { getDataJsonStorage } from '../../Utils/utilMethod';
-import { ACCESS_TOKEN } from '../../Utils/config';
-import { RcFile } from 'antd/es/upload';
+
 interface UpdateProfileProps {
   getUserProfile: userProfileApi | null;
 }
