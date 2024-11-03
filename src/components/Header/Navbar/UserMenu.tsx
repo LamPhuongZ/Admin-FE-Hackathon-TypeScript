@@ -64,6 +64,9 @@ export default function UserMenu() {
     };
   }, []);
 
+  console.log(userProfile)
+
+
   const renderAvatar = () => {
     if (!userProfile || !userProfile.avatar) {
       return <Avartar />;
@@ -71,7 +74,7 @@ export default function UserMenu() {
 
     return (
       <img
-        className="rounded-full h-[43px] w-[43px]"
+        className="rounded-full h-[43px] w-[43px] cursor-pointer"
         src={userProfile.avatar}
         height={43}
         width={43}

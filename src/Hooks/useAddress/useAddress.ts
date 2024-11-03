@@ -11,6 +11,20 @@ export const getDistrict = (districtId: string | number) => {
 export const getProvince = (provinceId: string | number) => {
   return data.province.find((province) => province.id === String(provinceId));
 };
+export const getDistrictIdByName = (districtName: string) => {
+  const district = data.district.find(
+    (district) => district.name.toLowerCase() === districtName.toLowerCase()
+  );
+  return district?.id || null;
+};
+
+// Hàm lấy provinceId dựa trên tên province
+export const getProvinceIdByName = (provinceName: string) => {
+  const province = data.province.find(
+    (province) => province.name.toLowerCase() === provinceName.toLowerCase()
+  );
+  return province?.id || null;
+};
 
 // export const useAddress = () => {
 //   const getDistrict = (provinceId: string | number) => {
