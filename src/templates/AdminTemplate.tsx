@@ -7,7 +7,7 @@ import logo from "../assets/images/logo-company.png";
 import { BellOutlined, UserOutlined } from "@ant-design/icons";
 import { PiShareNetworkBold } from "react-icons/pi";
 import { MdOutlineWorkOutline } from "react-icons/md";
-import { VscGraph, VscGroupByRefType } from "react-icons/vsc";
+import { VscGroupByRefType } from "react-icons/vsc";
 import { BiSolidBadgeCheck } from "react-icons/bi";
 
 import UserMenu from "../components/Header/Navbar/UserMenu";
@@ -60,15 +60,15 @@ const AdminTemplate: React.FC = () => {
       key: "4",
       icon: <VscGroupByRefType />,
     },
-    {
-      label: <Link to="/statistical">Thống kê</Link>,
-      key: "5",
-      icon: <VscGraph />,
-    },
-    {
-      label: <Link to="/profile">Trang cá nhân</Link>,
-      key: "10",
-    },
+    // {
+    //   label: <Link to="/statistical">Thống kê</Link>,
+    //   key: "5",
+    //   icon: <VscGraph />,
+    // },
+    // {
+    //   label: <Link to="/profile">Trang cá nhân</Link>,
+    //   key: "10",
+    // },
   ];
 
   return (

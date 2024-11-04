@@ -33,7 +33,7 @@ httpClient.interceptors.request.use(
     (req: InternalAxiosRequestConfig<any>) => {
         // ⭐ kiểm tra token có lưu trong localStorage hay không trước
         const accessToken = getDataTextStorage(ACCESS_TOKEN);
-        console.log("🚀 ~ file: config.ts:36 ~ accessToken:", accessToken);
+        // console.log("🚀 ~ file: config.ts:36 ~ accessToken:", accessToken);
 
         if (accessToken) {
             // Check if token is expired
