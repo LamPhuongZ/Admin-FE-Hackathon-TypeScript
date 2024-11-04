@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import type { TableProps } from 'antd';
-import { Button, Form, Input, InputNumber, Popconfirm, Space, Table, Typography } from 'antd';
+import type { FormProps, TableProps } from 'antd';
+import { Button, Flex, Form, Input, InputNumber, Modal, Popconfirm, Space, Table, Typography } from 'antd';
 import { useDispatch, useSelector } from 'react-redux';
 import { DispatchType, RootState } from '../../redux/configStore';
 import { FaEdit } from 'react-icons/fa';
 import { Excel } from 'antd-table-saveas-excel';
 import { ColumnType } from 'antd/es/table';
-import { deleteJobTypeAsyncAction, getAllJobTypeAsyncAction, jobTypeApi, updateJobTypeAsyncAction } from '../../redux/reducers/jobTypeReducer';
+import { createJobTypeAsyncAction, deleteJobTypeAsyncAction, getAllJobTypeAsyncAction, jobTypeApi, updateJobTypeAsyncAction } from '../../redux/reducers/jobTypeReducer';
 
 // Định nghĩa kiểu cột cho Excel
 interface IExcelColumn {
@@ -118,6 +118,42 @@ const TypeJob: React.FC = () => {
       // Gọi lại API để cập nhật danh sách người dùng sau khi xóa thành công
       await getDataListJobType();
     };
+
+  // ======================================
+  //             HANDLE MODEL
+  // ======================================
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const showModal = () => {
+    setIsModalOpen(true);
+  };
+
+  const handleOk = () => {
+    setIsModalOpen(false);
+  };
+
+  const handleCancel = () => {
+    setIsModalOpen(false);
+  };
+
+  // ======================================
+  //              HANDLE FORM
+  // ======================================
+  const [formCreate] = Form.useForm();
+
+  const onFinish: FormProps<jobTypeApi>["onFinish"] = async (values: jobTypeApi) => {
+      // ==== CALL API CREATE ⭐====
+    await dispatch(createJobTypeAsyncAction(values));
+    setIsModalOpen(false);
+    formCreate.resetFields()
+  };
+
+  const onFinishFailed: FormProps<jobTypeApi>["onFinishFailed"] = (
+    errorInfo
+  ) => {
+    console.log("Failed:", errorInfo);
+  };
+
 
 
   const [form] = Form.useForm();
@@ -303,6 +339,86 @@ const TypeJob: React.FC = () => {
   return (
     <>
       <Space className='pb-4'>
+      <Space>
+          <Button size="large" type="primary" onClick={showModal}>
+            Thêm kỹ năng
+          </Button>
+
+          {/* MODAL ⭐ */}
+          <Modal
+            title="Thêm kỹ năng"
+            open={isModalOpen}
+            onOk={handleOk}
+            onCancel={handleCancel}
+            width={800}
+          >
+            {/* FORM ⭐ */}
+            <Form
+              form={formCreate}
+              name="basic"
+              scrollToFirstError
+              style={{ paddingBlock: 32 }}
+              labelCol={{ span: 5 }}
+              wrapperCol={{ span: 18 }}
+              onFinish={onFinish}
+              onFinishFailed={onFinishFailed}
+              autoComplete="off"
+            >
+              <Form.Item<jobTypeApi>
+                label="Tên loại công việc "
+                name="name"
+                rules={[
+                  { required: true, message: "Vui lòng không bỏ trống !" },
+                ]}
+              >
+                <Input />
+              </Form.Item>
+
+              <Form.Item<jobTypeApi>
+                label="Mô tả kỹ năng"
+                name="description"
+                rules={[
+                  { required: true, message: "Vui lòng không bỏ trống !" },
+                ]}
+              >
+                <Input.TextArea rows={6} />
+              </Form.Item>
+
+              <Form.Item<jobTypeApi>
+                label="Giá thấp nhất"
+                name="minPrice"
+                rules={[
+                  { required: true, message: "Vui lòng không bỏ trống !" },
+                ]}
+              >
+                <Input />
+              </Form.Item>
+
+              <Form.Item<jobTypeApi>
+                label="Giá cao nhất"
+                name="maxPrice"
+                rules={[
+                  { required: true, message: "Vui lòng không bỏ trống !" },
+                ]}
+              >
+                <Input />
+              </Form.Item>
+
+              <Form.Item wrapperCol={{ offset: 5 }}>
+                <Flex gap="small">
+                  <Button type="primary" htmlType="submit">
+                    Thêm
+                  </Button>
+                  <Button danger onClick={() => formCreate.resetFields()}>
+                    Reset
+                  </Button>
+                </Flex>
+              </Form.Item>
+            </Form>
+          </Modal>
+        </Space>
+
+
         <Button
           size="large"
           onClick={() => {

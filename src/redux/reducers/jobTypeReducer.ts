@@ -79,6 +79,20 @@ export const getAllJobTypeAsyncAction = createAsyncThunk("getAllJobTypeAsyncActi
   }
 );
 
+export const createJobTypeAsyncAction = createAsyncThunk("createJobTypeAsyncAction",
+  async (rowFromData: jobTypeApi) => {
+    try {
+      await httpClient.post(`/api/v1/job-type`, rowFromData);
+
+      toast.success("Thêm dữ liệu thành công!", toastOptions);
+    } catch (err) {
+      toast.error("Thêm dữ liệu thất bại!", toastOptions);
+      console.log("🚀 ~ file: jobTypeReducer.ts:79 ~ createJobTypeAsyncAction ~ err:", err);
+      throw err;
+    }
+  }
+);
+
 
 export const updateJobTypeAsyncAction = createAsyncThunk("updateJobTypeAsyncAction",
   async (rowFromData: jobTypeApi) => {
