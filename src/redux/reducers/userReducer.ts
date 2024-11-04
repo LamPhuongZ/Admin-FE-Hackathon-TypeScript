@@ -82,8 +82,9 @@ const userReducer = createSlice({
       .addCase(changeProfileAsyncAction.pending, (state) => {
         state.closeInput = false;
       })
-      .addCase(changeProfileAsyncAction.fulfilled, (state) => {
+      .addCase(changeProfileAsyncAction.fulfilled, (state, action) => {
         state.closeInput = true;
+        state.userProfile = action.payload;
       })
       .addCase(changeProfileAsyncAction.rejected, (state) => {
         state.closeInput = false;
@@ -159,16 +160,10 @@ export const allProfileUserAsyncAction = createAsyncThunk(
 
 export const changeProfileAsyncAction = createAsyncThunk("changeProfileAsyncAction", async (changeUserProfiles: userProfileApi) => {
   try {
-    const res = await httpClient.put(`/api/v1/self`, changeUserProfiles);
-
-    let userLoginData = getDataJsonStorage(USER_LOGIN);
-    if (userLoginData) {
-      userLoginData = res.data.data
-      setDataJsonStorage(USER_LOGIN, userLoginData);
-    }
+    const res = await httpClient.patch(`/api/v1/self`, changeUserProfiles);
 
     toast.success('Cập nhật thành công!', toastOptions);
-
+    return res.data.data;
   } catch (err) {
     toast.error('Cập nhật thất bại!', toastOptions);
     console.log("🚀 ~ file: userReducer.ts:81 ~ changeProfileAsyncAction ~ err:", err)

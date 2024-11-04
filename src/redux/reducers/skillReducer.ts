@@ -3,6 +3,11 @@ import { httpClient } from '../../Utils/config';
 import { toast } from 'react-toastify';
 import { toastOptions } from '../../Utils/toastOptions';
 
+export type createSkillApi = {
+  skill: string;
+  description?: string;
+};
+
 export interface skillApi {
   id: number;
   skill: string;
@@ -88,7 +93,7 @@ export const getAllSkillAsyncAction = createAsyncThunk("getAllSkillAsyncAction",
 );
 
 export const createSkillAsyncAction = createAsyncThunk("createSkillAsyncAction",
-  async (rowFromData: skillApi) => {
+  async (rowFromData: createSkillApi) => {
     try {
       await httpClient.post(`/api/v1/job-skill`, rowFromData);
 

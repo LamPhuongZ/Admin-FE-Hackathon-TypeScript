@@ -1,11 +1,11 @@
 // import App from "../../components/DatePicker/DatePicker"
-import TableData from "../../components/Table/Table"
+import App from "../../components/Form/Form"
 
 type Props = {}
 
 function Statistical({}: Props) {
   return (
-    <div><TableData/></div>
+    <div><App/></div>
   )
 }
 

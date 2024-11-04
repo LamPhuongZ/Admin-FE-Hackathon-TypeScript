@@ -64,8 +64,6 @@ export default function UserMenu() {
     };
   }, []);
 
-  console.log(userProfile)
-
 
   const renderAvatar = () => {
     if (!userProfile || !userProfile.avatar) {

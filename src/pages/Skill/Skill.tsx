@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import type { TableProps } from "antd";
+import type { FormProps, TableProps } from "antd";
 import {
   Button,
   Flex,
@@ -8,7 +8,6 @@ import {
   InputNumber,
   Modal,
   Popconfirm,
-  Select,
   Space,
   Table,
   Typography,
@@ -16,6 +15,8 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import { DispatchType, RootState } from "../../redux/configStore";
 import {
+    createSkillApi,
+    createSkillAsyncAction,
   deleteSkillAsyncAction,
   getAllSkillAsyncAction,
   skillApi,
@@ -31,6 +32,7 @@ interface IExcelColumn {
   dataIndex: string;
   key?: string;
 }
+
 
 interface DataType {
   stt?: number;
@@ -151,9 +153,26 @@ const Skill: React.FC = () => {
   const handleCancel = () => {
     setIsModalOpen(false);
   };
-  
+
+  // ======================================
+  //              HANDLE FORM
+  // ======================================
   const [formCreate] = Form.useForm();
-  console.log("🚀 ~ file: Skill.tsx:156 ~ formCreate:", formCreate);
+
+  const onFinish: FormProps<createSkillApi>["onFinish"] = async (values: createSkillApi) => {
+      // ==== CALL API CREATE ⭐====
+    await dispatch(createSkillAsyncAction(values));
+    setIsModalOpen(false);
+    formCreate.resetFields()
+  };
+
+  const onFinishFailed: FormProps<createSkillApi>["onFinishFailed"] = (
+    errorInfo
+  ) => {
+    console.log("Failed:", errorInfo);
+  };
+
+
 
   const [form] = Form.useForm();
   const [data, setData] = useState<DataType[]>([]);
@@ -325,29 +344,48 @@ const Skill: React.FC = () => {
           <Button size="large" type="primary" onClick={showModal}>
             Thêm kỹ năng
           </Button>
+
+          {/* MODAL ⭐ */}
           <Modal
             title="Thêm kỹ năng"
             open={isModalOpen}
             onOk={handleOk}
             onCancel={handleCancel}
+            width={800}
           >
-
+            {/* FORM ⭐ */}
             <Form
               form={formCreate}
+              name="basic"
               scrollToFirstError
               style={{ paddingBlock: 32 }}
-              labelCol={{ span: 6 }}
-              wrapperCol={{ span: 14 }}
+              labelCol={{ span: 4 }}
+              wrapperCol={{ span: 18 }}
+              onFinish={onFinish}
+              onFinishFailed={onFinishFailed}
+              autoComplete="off"
             >
-
-              <Form.Item name="skill" label="Kỹ năng" rules={[{ required: true }]}>
+              <Form.Item<createSkillApi>
+                label="Kỹ năng"
+                name="skill"
+                rules={[
+                  { required: true, message: "Vui lòng không bỏ trống !" },
+                ]}
+              >
                 <Input />
               </Form.Item>
-              <Form.Item name="description" label="Mô tả" rules={[{ required: true }]}>
+
+              <Form.Item<createSkillApi>
+                label="Mô tả kỹ năng"
+                name="description"
+                rules={[
+                  { required: true, message: "Vui lòng không bỏ trống !" },
+                ]}
+              >
                 <Input.TextArea rows={6} />
               </Form.Item>
 
-              <Form.Item wrapperCol={{ offset: 6 }}>
+              <Form.Item wrapperCol={{ offset: 4 }}>
                 <Flex gap="small">
                   <Button type="primary" htmlType="submit">
                     Thêm
@@ -358,11 +396,8 @@ const Skill: React.FC = () => {
                 </Flex>
               </Form.Item>
             </Form>
-
           </Modal>
         </Space>
-
-
 
         <Button
           size="large"
