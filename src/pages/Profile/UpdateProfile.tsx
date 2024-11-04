@@ -1,43 +1,35 @@
 import React, { useEffect, useState } from 'react';
-import { Button, Col, DatePicker, Drawer, Input, Row, Select, Space, Form, message } from 'antd';
+import { Button, Col, DatePicker, Drawer, Input, Row, Select, Space, Form, Upload, message } from 'antd';
 import { userProfileApi } from '../../redux/reducers/userReducer'
 import moment, { Moment } from 'moment';
 import axios from 'axios';
+import { getProvince } from '../../Hooks/useAddress/useAddress';
 import addressData from '../../Hooks/useAddress/address.json';
-
-interface UpdateProfileProps {
-  getUserProfile: userProfileApi | null;
-}
-
-const UpdateProfile: React.FC<UpdateProfileProps> = ({ getUserProfile }) => {
+import { RcFile, UploadFile } from 'antd/es/upload';
+import { useSelector } from 'react-redux';
+import { RootState } from '../../redux/configStore';
+import { PlusOutlined } from '@ant-design/icons';
+import {  useForm } from 'react-hook-form'
+const UpdateProfile: React.FC = () => {
+  const { userProfile } = useSelector((state: RootState) => state.userReducer)
+  const [avatar, setAvatar] = useState<RcFile>()
   const [open, setOpen] = useState(false);
   const [selectedProvinceId, setSelectedProvinceId] = useState<string>('');
-  // const { Dragger } = Upload;
+  // const [fileList, setFileList] = useState([]);
   const [form] = Form.useForm();
+  const { control } = useForm();
   const getDistrictsByProvinceId = (provinceId: string) => {
     return addressData.district.filter(d => d.provinceId === provinceId);
   };
 
-  const dob: Moment | null = getUserProfile?.dob
-    ? moment(getUserProfile.dob, "YYYY-MM-DD")
+  const dob: Moment | null = userProfile?.dob
+    ? moment(userProfile.dob, "YYYY-MM-DD")
     : null;
 
-  // const onChange = (info: any) => {
-  //   const { status } = info.file;
-  //   if (status !== 'uploading') {
-  //     console.log(info.file, info.fileList);
-  //   }
-  //   if (status === 'done') {
-  //     message.success(`${info.file.name} file uploaded successfully.`);
-  //   } else if (status === 'error') {
-  //     message.error(`${info.file.name} file upload failed.`);
-  //   }
-  // }
 
-  // const onDrop = (e: any) => {
-  //   console.log('Dropped files', e.dataTransfer.files);
-  // }
 
+
+  // của hiển thị drawer
   const showDrawer = () => {
     setOpen(true);
   };
@@ -46,60 +38,44 @@ const UpdateProfile: React.FC<UpdateProfileProps> = ({ getUserProfile }) => {
     setOpen(false);
   };
 
+  // của form
   const onFinish = (values: userProfileApi) => {
-    // console.log('Success:', moment(values.dob).format('YYYY-MM-DD'));
+    // const payload = {
+    //   ...values,
+    //   avatar: values.avatar?.file?.oringinFileObj
+    // }
+    const dataForm = Object.assign(values,{
+      avatar
+    })
+    
+    console.log('Success:', moment(values.dob).format('YYYY-MM-DD'));
     updateProfile(values)
-    // console.log('Province ID:', values.provinceId);
-    // console.log('District ID:', values.districtId);
+    console.log(dataForm);
+
+
   };
 
   const onFinishFailed = (errorInfo: any) => {
     console.log('Failed:', errorInfo);
   };
 
-  // const onChangeUpload = async (info: any) => {
-  //   const { status, originFileObj } = info.file;
-  //   if (status === 'uploading') {
-  //     return;
-  //   }
-  //   if (status === 'done') {
-  //     // Lấy response từ server sau khi upload thành công
-  //     const imageUrl = info.file.response?.url;
-  //     if (imageUrl) {
-  //       message.success('Tải ảnh lên thành công');
-  //       // Cập nhật avatar trong form
-  //       form.setFieldsValue({ avatar: imageUrl });
-  //     }
-  //   } else if (status === 'error') {
-  //     message.error('Tải ảnh lên thất bại');
-  //   }
-  // };
-
-  // const beforeUpload = (file: RcFile) => {
-  //   const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png';
-  //   if (!isJpgOrPng) {
-  //     message.error('Chỉ chấp nhận file JPG/PNG!');
-  //     return false;
-  //   }
-  //   const isLt2M = file.size / 1024 / 1024 < 2;
-  //   if (!isLt2M) {
-  //     message.error('Kích thước ảnh phải nhỏ hơn 2MB!');
-  //     return false;
-  //   }
-  //   return true;
-  // };
 
 
 
+  // Gọi api để thay đổi dữ liệu trên server
   const updateProfile = async (values: userProfileApi) => {
     const accessToken = localStorage.getItem('access_token');
     console.log(accessToken)
     try {
       const response = await axios.patch('https://api.easyjob.io.vn/api/v1/self', {
         ...values,
-        dob: moment(values.dob).format('YYYY-MM-DD'),
-        provinceId: values.provinceId,
-        districtId: values.districtId
+        // dob: moment(values.dob).format('YYYY-MM-DD'),
+        // provinceId: values.provinceId,
+        // districtId: values.districtId,
+        // avatar: values.avatar
+
+
+
       }, {
         headers: {
           'Authorization': `Bearer ${accessToken}`,
@@ -123,6 +99,29 @@ const UpdateProfile: React.FC<UpdateProfileProps> = ({ getUserProfile }) => {
     }
   }, [dob, form]);
 
+  const normFile = (e: any) => {
+    if (Array.isArray(e)) {
+      return e;
+    }
+    return e?.fileList;
+  };
+  console.log(userProfile)
+
+  // upload picture
+  const fileList: UploadFile[] = [
+    {
+      uid: '-1',
+      name: 'yyy.png',
+      status: 'done',
+      url: userProfile?.avatar,
+    },
+
+  ];
+  const handleBeforUpload = (file: RcFile )=>{
+    setAvatar(file)
+    console.log(file)
+    return false 
+  }
 
 
   return (
@@ -149,29 +148,34 @@ const UpdateProfile: React.FC<UpdateProfileProps> = ({ getUserProfile }) => {
           </Space>
         }
       >
-        <Form form={form} layout="vertical" id="updateProfileForm" onFinish={onFinish}
+        <Form 
+        initialValues={{
+          fullname: userProfile?.fullname || 'Chưa có thông tin ',
+          phone: userProfile?.phone || 'Chưa có thông tin ',
+          email: userProfile?.email || 'Chưa có thông tin ',
+          dob: dob,
+          address: userProfile?.address || 'Chưa có thông tin ',
+          provinceId: userProfile?.provinceId ? getProvince(userProfile.provinceId.toString())?.name : 'Chưa cập nhật',
+          districtId: userProfile?.districtId ? getProvince(userProfile.districtId.toString())?.name : 'Chưa cập nhật',
+          skillIds: [1, 2, 3]
+
+        }} layout="vertical" id="updateProfileForm" onFinish={onFinish}
           onFinishFailed={onFinishFailed}>
-          {/* <Row gutter={16}>
+          <Row gutter={16}>
             <Col span={24}>
-              <Form.Item
-                name="avatar"
-                label="Avatar"
 
-              >
-                <Dragger name='file'
-                  onChange={onChange} onDrop={onDrop} accept=".jpg,.jpeg,.png"
+              <Form.Item name="avatar" label="Avatar" getValueFromEvent={normFile}>
+                <Upload maxCount={1} listType="picture-card" defaultFileList={fileList} beforeUpload={handleBeforUpload}  
                 >
-                  <p className="ant-upload-drag-icon">
-                    <InboxOutlined />
-                  </p>
-                  <p className="ant-upload-text">Bấm hoặc kéo thả hình ảnh </p>
-
-                </Dragger>
+                  <button style={{ border: 0, background: 'none' }} type="button">
+                    <PlusOutlined />
+                    <div style={{ marginTop: 8 }}>Upload</div>
+                  </button>
+                </Upload>
+               
               </Form.Item>
             </Col>
-          </Row> */}
-
-
+          </Row>
 
           <Row gutter={16}>
             <Col span={12}>
@@ -180,20 +184,16 @@ const UpdateProfile: React.FC<UpdateProfileProps> = ({ getUserProfile }) => {
                 label="Họ và tên"
                 rules={[{ message: 'Hãy nhập tên của bạn !!' }]}
               >
-                <Input placeholder="Please enter user name" />
+                <Input placeholder={userProfile?.fullname || 'Chưa cập nhật'} />
               </Form.Item>
             </Col>
             <Col span={12}>
               <Form.Item
                 name="email"
-                label="Email"
-                rules={[{
-                  type: 'email',
-                  message: 'Email không đúng định dạng!'
-                },
-                ]}
+                label="Họ và tên"
+                rules={[{ message: 'Hãy nhập tên của bạn !!' }]}
               >
-                <Input type='email' placeholder='Nhập email'></Input>
+                <Input disabled placeholder={userProfile?.email} />
               </Form.Item>
             </Col>
           </Row>
@@ -220,17 +220,14 @@ const UpdateProfile: React.FC<UpdateProfileProps> = ({ getUserProfile }) => {
               <Form.Item
                 name="dob"
                 label="Ngày sinh"
-                rules={[{ required: true, message: 'Vui lòng chọn ngày sinh!' }]}
-                initialValue={dob}
               >
                 <DatePicker
                   format="YYYY-MM-DD"
                   style={{ width: '100%' }}
-                  placeholder="Chọn ngày sinh"
-                  getPopupContainer={(trigger) => trigger.parentElement!}
                 />
               </Form.Item>
             </Col>
+
           </Row>
           <Row gutter={16}>
             <Col span={8}>
@@ -238,7 +235,7 @@ const UpdateProfile: React.FC<UpdateProfileProps> = ({ getUserProfile }) => {
                 name="address"
                 label="Địa chỉ"
               >
-                <Input placeholder="Nhập địa chỉ" />
+                <Input value={userProfile?.address} placeholder="Nhập địa chỉ" />
               </Form.Item>
             </Col>
             <Col span={8}>
@@ -277,6 +274,21 @@ const UpdateProfile: React.FC<UpdateProfileProps> = ({ getUserProfile }) => {
             </Col>
 
           </Row>
+
+          <Row gutter={16}>
+            <Col span={12}>
+              <Form.Item
+                name="skillIds"
+                label="Skill"
+
+              >
+                <Input placeholder={'skill'} disabled />
+              </Form.Item>
+            </Col>
+
+          </Row>
+
+
         </Form>
       </Drawer>
     </>
