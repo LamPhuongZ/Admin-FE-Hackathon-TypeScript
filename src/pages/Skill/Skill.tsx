@@ -1,12 +1,29 @@
-import React, { useEffect, useState } from 'react';
-import type { TableProps } from 'antd';
-import { Button, Form, Input, InputNumber, Popconfirm, Space, Table, Typography } from 'antd';
-import { useDispatch, useSelector } from 'react-redux';
-import { DispatchType, RootState } from '../../redux/configStore';
-import { deleteSkillAsyncAction, getAllSkillAsyncAction, skillApi, updateSkillAsyncAction } from '../../redux/reducers/skillReducer';
-import { FaEdit } from 'react-icons/fa';
-import { Excel } from 'antd-table-saveas-excel';
-import { ColumnType } from 'antd/es/table';
+import React, { useEffect, useState } from "react";
+import type { TableProps } from "antd";
+import {
+  Button,
+  Flex,
+  Form,
+  Input,
+  InputNumber,
+  Modal,
+  Popconfirm,
+  Select,
+  Space,
+  Table,
+  Typography,
+} from "antd";
+import { useDispatch, useSelector } from "react-redux";
+import { DispatchType, RootState } from "../../redux/configStore";
+import {
+  deleteSkillAsyncAction,
+  getAllSkillAsyncAction,
+  skillApi,
+  updateSkillAsyncAction,
+} from "../../redux/reducers/skillReducer";
+import { FaEdit } from "react-icons/fa";
+import { Excel } from "antd-table-saveas-excel";
+import { ColumnType } from "antd/es/table";
 
 // Định nghĩa kiểu cột cho Excel
 interface IExcelColumn {
@@ -26,7 +43,7 @@ interface EditableCellProps extends React.HTMLAttributes<HTMLElement> {
   editing: boolean;
   dataIndex: string;
   title: any;
-  inputType: 'number' | 'text';
+  inputType: "number" | "text";
   record: DataType;
   index: number;
 }
@@ -44,11 +61,13 @@ const EditableCell: React.FC<React.PropsWithChildren<EditableCellProps>> = ({
   // Kiểm tra nếu là cột `stt` hoặc `id`, thì disable input
   // const inputNode = inputType === 'number' ? <InputNumber /> : <Input />;
   const inputNode =
-    dataIndex === 'stt' || dataIndex === 'id'
-      ? <InputNumber disabled />
-      : inputType === 'number'
-        ? <InputNumber />
-        : <Input.TextArea rows={4} style={{ height: 'auto' }} />; // Sử dụng TextArea cho chữ tự xuống dòng
+    dataIndex === "stt" || dataIndex === "id" ? (
+      <InputNumber disabled />
+    ) : inputType === "number" ? (
+      <InputNumber />
+    ) : (
+      <Input.TextArea rows={4} style={{ height: "auto" }} />
+    ); // Sử dụng TextArea cho chữ tự xuống dòng
 
   return (
     <td {...restProps}>
@@ -72,9 +91,10 @@ const EditableCell: React.FC<React.PropsWithChildren<EditableCellProps>> = ({
   );
 };
 
-
 const Skill: React.FC = () => {
-  const { allSkill } = useSelector((state: RootState) => state.skillReducer) as { allSkill: DataType[] };
+  const { allSkill } = useSelector(
+    (state: RootState) => state.skillReducer
+  ) as { allSkill: DataType[] };
   const dispatch: DispatchType = useDispatch();
 
   // ==== CALL API ⭐====
@@ -101,8 +121,6 @@ const Skill: React.FC = () => {
     }
   }, [allSkill]);
 
-
-
   // ==== CALL API DELETE ⭐====
   const handleDelete = async (id: number) => {
     await dispatch(deleteSkillAsyncAction(id));
@@ -110,27 +128,46 @@ const Skill: React.FC = () => {
     await getDataListSkill();
   };
 
-    // ==== CALL API UPDATE ⭐====
-    const handleUpdate = async (rowFromData: skillApi) => {
-      await dispatch(updateSkillAsyncAction(rowFromData));
-      // Gọi lại API để cập nhật danh sách người dùng sau khi xóa thành công
-      await getDataListSkill();
-    };
+  // ==== CALL API UPDATE ⭐====
+  const handleUpdate = async (rowFromData: skillApi) => {
+    await dispatch(updateSkillAsyncAction(rowFromData));
+    // Gọi lại API để cập nhật danh sách người dùng sau khi xóa thành công
+    await getDataListSkill();
+  };
 
+  // ======================================
+  //             HANDLE MODEL
+  // ======================================
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const showModal = () => {
+    setIsModalOpen(true);
+  };
+
+  const handleOk = () => {
+    setIsModalOpen(false);
+  };
+
+  const handleCancel = () => {
+    setIsModalOpen(false);
+  };
+  
+  const [formCreate] = Form.useForm();
+  console.log("🚀 ~ file: Skill.tsx:156 ~ formCreate:", formCreate);
 
   const [form] = Form.useForm();
   const [data, setData] = useState<DataType[]>([]);
-  const [editingKey, setEditingKey] = useState<number | string>('');
+  const [editingKey, setEditingKey] = useState<number | string>("");
 
   const isEditing = (record: DataType) => record.id === editingKey;
 
   const edit = (record: Partial<DataType> & { id: React.Key }) => {
-    form.setFieldsValue({ stt: '', skill: '', description: '', ...record });
+    form.setFieldsValue({ stt: "", skill: "", description: "", ...record });
     setEditingKey(record.id);
   };
 
   const cancel = () => {
-    setEditingKey('');
+    setEditingKey("");
   };
 
   // ================================
@@ -141,7 +178,7 @@ const Skill: React.FC = () => {
       const row = (await form.validateFields()) as DataType;
       console.log("🚀 ~ file: Skill.tsx:135 ~ save ~ row:", row);
       // ==== CALL API UPDATE ⭐====
-      handleUpdate(row)
+      handleUpdate(row);
 
       const newData = [...data];
       const index = newData.findIndex((item) => id === item.id);
@@ -152,94 +189,101 @@ const Skill: React.FC = () => {
           ...row,
         });
         setData(newData);
-        setEditingKey('');
+        setEditingKey("");
       } else {
         newData.push(row);
         setData(newData);
-        setEditingKey('');
+        setEditingKey("");
       }
     } catch (errInfo) {
-      console.log('Validate Failed:', errInfo);
+      console.log("Validate Failed:", errInfo);
     }
   };
 
   const columns = [
     {
-      title: 'Stt',
-      dataIndex: 'stt',
-      key: 'stt',
+      title: "Stt",
+      dataIndex: "stt",
+      key: "stt",
       width: 40,
       editable: true,
     },
     {
-      title: 'Id',
-      dataIndex: 'id',
-      key: 'id',
+      title: "Id",
+      dataIndex: "id",
+      key: "id",
       width: 40,
       editable: true,
     },
     {
-      title: 'Kỹ năng',
-      dataIndex: 'skill',
-      key: 'skill',
+      title: "Kỹ năng",
+      dataIndex: "skill",
+      key: "skill",
       width: 250,
       editable: true,
     },
     {
-      title: 'Mô tả',
-      dataIndex: 'description',
-      key: 'description',
+      title: "Mô tả",
+      dataIndex: "description",
+      key: "description",
       width: 500,
       editable: true,
     },
     {
-      title: 'Chỉnh sửa',
+      title: "Chỉnh sửa",
       width: 130,
-      dataIndex: 'operation',
+      dataIndex: "operation",
       render: (_: any, record: DataType) => {
         const editable = isEditing(record);
         return editable ? (
           <span>
-            <Typography.Link onClick={() => save(record.id)} style={{ marginInlineEnd: 8 }}>
-              <Button className='bg-[#57c81f] text-white custom-button' >
+            <Typography.Link
+              onClick={() => save(record.id)}
+              style={{ marginInlineEnd: 8 }}
+            >
+              <Button className="bg-[#57c81f] text-white custom-button">
                 Lưu
               </Button>
             </Typography.Link>
 
             <Popconfirm title="Bạn có muốn hủy?" onConfirm={cancel}>
-              <Button type='primary' danger>
+              <Button type="primary" danger>
                 Hủy
               </Button>
             </Popconfirm>
           </span>
         ) : (
-          <Typography.Link className='flex justify-center' disabled={editingKey !== ''} onClick={() => edit(record)}>
+          <Typography.Link
+            className="flex justify-center"
+            disabled={editingKey !== ""}
+            onClick={() => edit(record)}
+          >
             <Button type="primary">
-              <FaEdit className='inline-block me-[6px] text-xl' /> Sửa
+              <FaEdit className="inline-block me-[6px] text-xl" /> Sửa
             </Button>
           </Typography.Link>
         );
       },
     },
     {
-      title: 'Xóa Kỹ năng',
-      dataIndex: 'delete',
-      key: 'delete',
+      title: "Xóa Kỹ năng",
+      dataIndex: "delete",
+      key: "delete",
       width: 100,
       render: (_: any, record: DataType) => (
-        <div style={{ display: 'flex', justifyContent: 'center' }}>
+        <div style={{ display: "flex", justifyContent: "center" }}>
           <Button type="primary" danger onClick={() => handleDelete(record.id)}>
             X
           </Button>
         </div>
-      )
+      ),
     },
   ];
 
   // ================================
   //            MERGED COLUMS ⭐
   // ================================
-  const mergedColumns: TableProps<DataType>['columns'] = columns.map((col) => {
+  const mergedColumns: TableProps<DataType>["columns"] = columns.map((col) => {
     if (!col.editable) {
       return col;
     }
@@ -247,14 +291,14 @@ const Skill: React.FC = () => {
       ...col,
       onCell: (record: DataType) => ({
         record,
-        inputType: col.dataIndex === 'stt' || col.dataIndex === 'id' ? 'number' : 'text',
+        inputType:
+          col.dataIndex === "stt" || col.dataIndex === "id" ? "number" : "text",
         dataIndex: col.dataIndex,
         title: col.title,
         editing: isEditing(record),
       }),
     };
   });
-
 
   // ====================================================
   //                EXPORT EXCEL FILE
@@ -276,15 +320,58 @@ const Skill: React.FC = () => {
 
   return (
     <>
-      <Space className='pb-4'>
+      <Space className="pb-4">
+        <Space>
+          <Button size="large" type="primary" onClick={showModal}>
+            Thêm kỹ năng
+          </Button>
+          <Modal
+            title="Thêm kỹ năng"
+            open={isModalOpen}
+            onOk={handleOk}
+            onCancel={handleCancel}
+          >
+
+            <Form
+              form={formCreate}
+              scrollToFirstError
+              style={{ paddingBlock: 32 }}
+              labelCol={{ span: 6 }}
+              wrapperCol={{ span: 14 }}
+            >
+
+              <Form.Item name="skill" label="Kỹ năng" rules={[{ required: true }]}>
+                <Input />
+              </Form.Item>
+              <Form.Item name="description" label="Mô tả" rules={[{ required: true }]}>
+                <Input.TextArea rows={6} />
+              </Form.Item>
+
+              <Form.Item wrapperCol={{ offset: 6 }}>
+                <Flex gap="small">
+                  <Button type="primary" htmlType="submit">
+                    Thêm
+                  </Button>
+                  <Button danger onClick={() => formCreate.resetFields()}>
+                    Reset
+                  </Button>
+                </Flex>
+              </Form.Item>
+            </Form>
+
+          </Modal>
+        </Space>
+
+
+
         <Button
           size="large"
           onClick={() => {
             const excel = new Excel();
             excel
               .addSheet("DanhSachKynang")
-              .addColumns(excelColumns)           // Sử dụng excelColumns thay vì columns của Table
-              .addDataSource(data || [])          // Sử dụng [] nếu data là undefined
+              .addColumns(excelColumns) // Sử dụng excelColumns thay vì columns của Table
+              .addDataSource(data || []) // Sử dụng [] nếu data là undefined
               .saveAs("DanhSachKynang.xlsx");
           }}
         >
@@ -297,11 +384,11 @@ const Skill: React.FC = () => {
             body: { cell: EditableCell },
           }}
           bordered
-          size='small'
+          size="small"
           dataSource={data}
           columns={mergedColumns}
           rowKey="id"
-          scroll={{ x: 'max-content', y: 370 }}
+          scroll={{ x: "max-content", y: 370 }}
           pagination={{ onChange: cancel }}
         />
       </Form>

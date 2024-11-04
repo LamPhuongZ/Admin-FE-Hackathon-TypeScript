@@ -36,6 +36,16 @@ const skillReducer = createSlice({
         state.isLoadingSkill = false;
       })
 
+      .addCase(createSkillAsyncAction.pending, (state) => {
+        state.isLoadingSkill = true;
+      })
+      .addCase(createSkillAsyncAction.fulfilled, (state) => {
+        state.isLoadingSkill = false;
+      })
+      .addCase(createSkillAsyncAction.rejected, (state) => {
+        state.isLoadingSkill = false;
+      })
+
       .addCase(updateSkillAsyncAction.pending, (state) => {
         state.isLoadingSkill = true;
       })
@@ -72,6 +82,20 @@ export const getAllSkillAsyncAction = createAsyncThunk("getAllSkillAsyncAction",
       return res.data.data;
     } catch (err) {
       console.log("🚀 ~ file: skillReducer.ts:43 ~ err:", err);
+      throw err;
+    }
+  }
+);
+
+export const createSkillAsyncAction = createAsyncThunk("createSkillAsyncAction",
+  async (rowFromData: skillApi) => {
+    try {
+      await httpClient.post(`/api/v1/job-skill`, rowFromData);
+
+      toast.success("Thêm dữ liệu thành công!", toastOptions);
+    } catch (err) {
+      toast.error("Thêm dữ liệu thất bại!", toastOptions);
+      console.log("🚀 ~ file: skillReducer.ts:79 ~ createSkillAsyncAction ~ err:", err);
       throw err;
     }
   }
