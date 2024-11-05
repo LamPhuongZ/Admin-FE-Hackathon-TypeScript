@@ -7,7 +7,6 @@ import { DispatchType, RootState } from '../../redux/configStore';
 import { createStyles } from 'antd-style';
 import { PiSealWarningFill } from 'react-icons/pi';
 import { BiSolidBadgeCheck } from 'react-icons/bi';
-import { UserOutlined } from '@ant-design/icons';
 import imgFace from "../../assets/images/face.jpg";
 
 import { ColumnType } from 'antd/es/table';
@@ -17,6 +16,7 @@ import moment from 'moment';
 import { getDistrict, getProvince } from '../../Hooks/useAddress/useAddress';
 import { RiCloseCircleFill } from 'react-icons/ri';
 import { RangePickerProps } from 'antd/es/date-picker';
+import { MdOutlineWorkOutline } from 'react-icons/md';
 
 
 // Định nghĩa kiểu cột cho Excel
@@ -383,7 +383,7 @@ const Job: React.FC = () => {
         <div className='flex items-center text-2xl font-medium'>
           <img className='me-2' src="https://emoji.slack-edge.com/T0172CCPGUW/party-blob/d7253707fa13e9ee.gif" width="30" />
           <h1 className='text-2xl me-1'>{allListJob?.totalElements}</h1>
-          <UserOutlined />
+          <MdOutlineWorkOutline />
         </div>
       </Space>
       <Table<jobApi>
