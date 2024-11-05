@@ -238,7 +238,7 @@ const TypeJob: React.FC = () => {
       editable: true,
       render: (text:number) => (
         <div>
-          {text} <span>.000đ</span>
+          {text} <span> đ</span>
         </div>
       )
     },
@@ -250,7 +250,7 @@ const TypeJob: React.FC = () => {
       editable: true,
       render: (text:number) => (
         <div>
-          {text} <span>.000đ</span>
+          {text} <span> đ</span>
         </div>
       )
     },
