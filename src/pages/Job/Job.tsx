@@ -8,10 +8,11 @@ import { createStyles } from 'antd-style';
 import { PiSealWarningFill } from 'react-icons/pi';
 import { BiSolidBadgeCheck } from 'react-icons/bi';
 import { UserOutlined } from '@ant-design/icons';
+import imgFace from "../../assets/images/face.jpg";
 
 import { ColumnType } from 'antd/es/table';
 import { Excel } from "antd-table-saveas-excel";
-import { allListJobAsyncAction, jobApi } from '../../redux/reducers/jobReducer';
+import { allListJobAsyncAction, jobApi, Image, acceptJobAsyncAction, rejectJobAsyncAction } from '../../redux/reducers/jobReducer';
 import moment from 'moment';
 import { getDistrict, getProvince } from '../../Hooks/useAddress/useAddress';
 import { RiCloseCircleFill } from 'react-icons/ri';
@@ -117,11 +118,17 @@ const Job: React.FC = () => {
   }, [searchValue, startDate, endDate, approvalStatus]);
 
 
-  // const handleDelete = async (id: number) => {
-  //   await dispatch(deleteProfileAsyncAction(id));
-  //   // Gọi lại API để cập nhật danh sách người dùng sau khi xóa thành công
-  //   await getListingJob(0, 100, 'id', 'desc', searchValue, undefined, undefined, startDate, endDate, undefined, approvalStatus);
-  // };
+  const handleAccept = async (id: number) => {
+    await dispatch(acceptJobAsyncAction(id));
+    // Gọi lại API để cập nhật danh sách người dùng sau khi accept
+    await getListingJob(0, 100, 'id', 'desc', searchValue, undefined, undefined, startDate, endDate, undefined, approvalStatus);
+  };
+
+  const handleReject = async (id: number) => {
+    await dispatch(rejectJobAsyncAction(id));
+    // Gọi lại API để cập nhật danh sách người dùng sau khi accept
+    await getListingJob(0, 100, 'id', 'desc', searchValue, undefined, undefined, startDate, endDate, undefined, approvalStatus);
+  };
 
 
 
@@ -160,23 +167,23 @@ const Job: React.FC = () => {
       key: 'description',
       width: 250,
     },
-    // {
-    //   title: <div style={{ textAlign: 'center' }}>Hình ảnh</div>,
-    //   dataIndex: 'images',
-    //   key: 'images',
-    //   width: 300,
-    //   render: (images: Image[]) => (
-    //     <div style={{ display: 'flex', justifyContent: 'center', gap: '10px' }}>
-    //       {images && images.length > 0 ? (
-    //         images.slice(0, 4).map((image, index) => (
-    //           <img key={index} src={image.url} width={50} alt="Job Image" />
-    //         ))
-    //       ) : (
-    //         <img src={imgFace} width={50} alt="Default Image" />
-    //       )}
-    //     </div>
-    //   ),
-    // },    
+    {
+      title: <div style={{ textAlign: 'center' }}>Hình ảnh</div>,
+      dataIndex: 'images',
+      key: 'images',
+      width: 300,
+      render: (images: Image[]) => (
+        <div style={{ display: 'flex', justifyContent: 'center', gap: '10px' }}>
+          {images && images.length > 0 ? (
+            images.slice(0, 4).map((image, index) => (
+              <img key={index} src={image.url} width={50} alt="Job Image" />
+            ))
+          ) : (
+            <img src={imgFace} width={50} alt="Default Image" />
+          )}
+        </div>
+      ),
+    },
     {
       title: 'Thời gian',
       dataIndex: 'duration',
@@ -281,21 +288,33 @@ const Job: React.FC = () => {
           })()}
         </div>
       ),
-    }
-    // {
-    //   title: 'Hành động',
-    //   dataIndex: 'delete',
-    //   key: 'delete',
-    //   width: 100,
-    //   fixed: 'right',
-    //   render: (_: any, record: jobApi) => (
-    //     <div style={{ display: 'flex', justifyContent: 'center' }}>
-    //       <Button type="primary" danger onClick={() => handleDelete(record.jobId)}>
-    //         X
-    //       </Button>
-    //     </div>
-    //   )
-    // },
+    },
+    {
+      title: 'Hành động',
+      dataIndex: 'delete',
+      key: 'delete',
+      width: 110,
+      fixed: 'right',
+      render: (_: any, record: jobApi) => (
+        <div style={{ display: 'flex', justifyContent: 'center', gap: 4 }}>
+          <Button
+            type="primary"
+            onClick={() => handleAccept(record.jobId)}
+            disabled={record.jobApprovalStatus !== 'PENDING'}
+          >
+            ✓
+          </Button>
+          <Button
+            type="primary"
+            danger
+            onClick={() => handleReject(record.jobId)}
+            disabled={record.jobApprovalStatus !== 'PENDING'}
+          >
+            X
+          </Button>
+        </div>
+      ),
+    },
   ];
 
 

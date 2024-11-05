@@ -1,5 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { httpClient } from "../../Utils/config";
+import { toastOptions } from "../../Utils/toastOptions";
+import { toast } from "react-toastify";
 
 // Định nghĩa kiểu dữ liệu
 export interface listJobeApi {
@@ -81,6 +83,26 @@ const jobReducer = createSlice({
       })
       .addCase(allListJobAsyncAction.rejected, (state) => {
         state.isLoadingListJob = false;
+      })
+      
+      .addCase(acceptJobAsyncAction.pending, (state) => {
+        state.isLoadingListJob = true;
+      })
+      .addCase(acceptJobAsyncAction.fulfilled, (state) => {
+        state.isLoadingListJob = false;
+      })
+      .addCase(acceptJobAsyncAction.rejected, (state) => {
+        state.isLoadingListJob = false;
+      })
+      
+      .addCase(rejectJobAsyncAction.pending, (state) => {
+        state.isLoadingListJob = true;
+      })
+      .addCase(rejectJobAsyncAction.fulfilled, (state) => {
+        state.isLoadingListJob = false;
+      })
+      .addCase(rejectJobAsyncAction.rejected, (state) => {
+        state.isLoadingListJob = false;
       });
   },
 });
@@ -132,6 +154,35 @@ export const allListJobAsyncAction = createAsyncThunk(
       return res.data.data;
     } catch (err) {
       console.error("🚀 ~ allListJobAsyncAction error:", err);
+      throw err;
+    }
+  }
+);
+
+
+export const acceptJobAsyncAction = createAsyncThunk("acceptJobAsyncAction",
+  async (id: number) => {
+    try {
+      await httpClient.post(`/api/v1/job/toggle-accept/${id}`);
+
+      toast.success("Xác nhận việc làm thành công!", toastOptions);
+    } catch (err) {
+      toast.error("Xác nhận việc làm thất bại!", toastOptions);
+      console.log("🚀 ~ file: jobReducer.ts:150 ~ err:", err);
+      throw err;
+    }
+  }
+);
+
+export const rejectJobAsyncAction = createAsyncThunk("rejectJobAsyncAction",
+  async (id: number) => {
+    try {
+      await httpClient.post(`/api/v1/job/toggle-reject/${id}`);
+
+      toast.success("Từ chối việc làm thành công!", toastOptions);
+    } catch (err) {
+      toast.error("Từ chối việc làm thất bại!", toastOptions);
+      console.log("🚀 ~ file: jobReducer.ts:164 ~ err:", err);
       throw err;
     }
   }
